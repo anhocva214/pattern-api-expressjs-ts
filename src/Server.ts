@@ -11,8 +11,8 @@ import 'express-async-errors';
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 
-import { ConnectDB } from '@database/connect';
-ConnectDB()
+import {connectDB} from '@config/db.config'
+connectDB()
     .then(() => console.log("connect db success"))
     .catch(err => console.log("connect db faild: ", err))
 
@@ -42,17 +42,16 @@ if (process.env.NODE_ENV === 'production') {
     app.use(helmet());
 }
 
-const ConnectMongoCloud = async (req: Request, res: Response)=>{
-    await ConnectDB()
-    .then(() => console.log("connect db success"))
-    .catch(err=>console.log("connect db faild: ", err))
 
-    return res.status(200).end()
+declare module "express" {
+    export interface Request {
+        user?: any;
+    }
 }
+
 
 // Add APIs
 app.use('/', BaseRouter);
-app.use('/connect-db', ConnectMongoCloud)
 
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
