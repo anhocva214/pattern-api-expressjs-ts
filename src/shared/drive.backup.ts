@@ -2,7 +2,6 @@ import fs from 'fs';
 import readline from 'readline';
 import { google } from 'googleapis'
 import path from 'path';
-import { GetListAll } from '@database/order/controller';
 
 const PATH_TO_CREDENTIALS: string = path.resolve(`${__dirname}/../files/client_secret.json`);
 
@@ -96,7 +95,8 @@ function listFiles(auth : any) {
 }
 
 export async function CreateFileJson() {
-    let data = await GetListAll();
+    // let data = await GetListAll();
+    let data = [{value: "Hello world"}]
     console.log(data)
     if (data.length > 0) {
         fs.writeFileSync(
