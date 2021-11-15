@@ -1,6 +1,6 @@
 /node_modules/
 .idea
 package-lock.json
-# .DS_Store
-# jet-logger.log
-# yarn.lock
+.DS_Store
+jet-logger.log
+yarn.lock
