@@ -13,8 +13,8 @@ import logger from '@shared/Logger';
 
 import {connectDB} from '@config/db.config'
 connectDB()
-    .then(() => console.log("connect db success"))
-    .catch(err => console.log("connect db faild: ", err))
+    .then(() => console.log("Connect database success"))
+    .catch(err => console.log("Connect database faild: ", err))
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;

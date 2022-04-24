@@ -10,9 +10,6 @@
     "test:no-reloading": "./node_modules/.bin/ts-node -r tsconfig-paths/register ./spec",
     "generate": "plop"
   },
-  "engines": {
-    "node": "12.x"
-  },
   "nodemonConfig": {
     "watch": [
       "src"
