@@ -25,7 +25,7 @@ export default class UserService{
     }
 
     async update(user: User): Promise<void>{
-        await this.userModel.updateOne({id: user.id}, user)
+        // await this.userModel.updateOne({id: user.id}, user)
     }
 
     async isExists(objQuery: object): Promise<boolean>{
