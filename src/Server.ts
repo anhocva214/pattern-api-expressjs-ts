@@ -8,13 +8,15 @@ import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
 
-import BaseRouter from './routes';
 import logger from '@shared/Logger';
 
 import {connectDB} from '@config/db.config'
+import v1Router from './routes/v1';
+
+
 connectDB()
-    .then(() => console.log("Connect database success"))
-    .catch(err => console.log("Connect database faild: ", err))
+    .then(() => logger.info("Connect database success"))
+    .catch(err => logger.err("Connect database faild: ", err))
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -51,7 +53,7 @@ declare module "express" {
 
 
 // Add APIs
-app.use('/', BaseRouter);
+app.use('/v1', v1Router);
 
 // Print API errors
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
