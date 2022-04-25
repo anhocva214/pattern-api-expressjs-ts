@@ -1,5 +1,5 @@
 import JWT from 'jsonwebtoken';
-import {SecretJWT} from './constants';
+// import {SecretJWT} from './constants';
 import {NextFunction, Request, Response} from 'express'
 import StatusCodes from 'http-status-codes';
 const { UNAUTHORIZED} = StatusCodes;

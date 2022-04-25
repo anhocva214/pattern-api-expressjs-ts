@@ -75,17 +75,20 @@
       "@shared/*": [
         "src/shared/*"
       ],
-      "@server": [
-        "src/Server"
-      ],
-      "@services/*": [
-        "src/services/*"
+      "@repositories/*": [
+        "src/repositories/*"
       ],
       "@controllers/*": [
         "src/controllers/*"
       ],
       "@middleware/*": [
         "src/middleware/*"
+      ],
+      "@validators/*": [
+        "src/validators/*"
+      ],
+      "@interfaces/*": [
+        "src/interfaces/*"
       ]
     },
   },

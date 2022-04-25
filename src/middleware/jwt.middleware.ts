@@ -21,8 +21,8 @@ export async function userMiddleware(req: Request, res: Response, next: NextFunc
     if (!user)
         return res.status(UNAUTHORIZED).send({message: 'Access token invalid'})
 
-    if (user.access_token != accessToken)
-        return res.status(UNAUTHORIZED).send({message: 'Access token does not match'})
+    // if (user.access_token != accessToken)
+    //     return res.status(UNAUTHORIZED).send({message: 'Access token does not match'})
 
     req.user = user;
     next()

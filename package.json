@@ -25,9 +25,12 @@
     "@models": "dist/models",
     "@shared": "dist/shared",
     "@server": "dist/Server",
-    "@services": "dist/services",
     "@controllers": "dist/controllers",
-    "@middleware": "dist/middleware"
+    "@middleware": "dist/middleware",
+    "@validators": "dist/validators",
+    "@interfaces": "dist/interfaces",
+    "@repositories":"dist/repositories"
+
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",

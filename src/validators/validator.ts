@@ -48,6 +48,7 @@ export default class Validator {
         }
     }
 
+
     private required(obj: IObj, field: string, value?: any) {        
         if (!obj[field]) {
             return {
