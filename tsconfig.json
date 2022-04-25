@@ -89,6 +89,9 @@
       ],
       "@interfaces/*": [
         "src/interfaces/*"
+      ],
+      "@server": [
+        "src/Server.ts"
       ]
     },
   },
