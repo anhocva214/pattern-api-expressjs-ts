@@ -5,7 +5,7 @@ Template NodeJs (Express Js) With Typescript
     ✅ Controller
     ✅ Middleware
     ✅ Model
-    ✅ Service
+    ✅ Repository
 
 ### Install   
 ```bash
