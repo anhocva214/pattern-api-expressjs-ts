@@ -4,6 +4,7 @@ import IWriteRepository from "@interfaces/write-repository.interface";
 import { randomIntNumber } from "@shared/number";
 import { FilterQuery, Model, Types } from 'mongoose';
 import { ClassificationType } from "typescript";
+import moment from "moment";
 
 export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRepository<T> {
 
@@ -16,8 +17,8 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
     }
 
     async create(item: T): Promise<T> {
-        let timestamp = new Date().getTime()*10000
-        let created_at = new Date().toUTCString()
+        let timestamp = moment.utc().valueOf()
+        let created_at = timestamp
         let doc = await this.model.create({
             ...item, 
             _id: Types.ObjectId(timestamp),
