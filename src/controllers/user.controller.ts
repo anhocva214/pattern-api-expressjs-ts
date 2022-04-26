@@ -7,7 +7,7 @@ import {v1 as uuidv1} from 'uuid'
 import UsersRepository from '@repositories/users.repository';
 import { Token } from '@models/token.model';
 import JwtRepository from '@repositories/jwt.repository';
-import TokenRepository from '@repositories/token.repository';
+import TokensRepository from '@repositories/token.repository';
 
 
 export default class UserController {
@@ -15,14 +15,14 @@ export default class UserController {
     private usersRepository: UsersRepository;
     private jwtRepository: JwtRepository;
     private LOGIN_EXPIRES_IN: number;
-    private tokenRepository: TokenRepository;
+    private TokensRepository: TokensRepository;
     
     constructor(){
         this.user = new User();
         this.usersRepository = new UsersRepository();
         this.jwtRepository = new JwtRepository();
         this.LOGIN_EXPIRES_IN = 60*60*8
-        this.tokenRepository = new TokenRepository();
+        this.TokensRepository = new TokensRepository();
     }
 
     // Regiser new user
@@ -47,7 +47,7 @@ export default class UserController {
         token.payload = this.jwtRepository.login(user, this.LOGIN_EXPIRES_IN)
         token.expires_in = this.LOGIN_EXPIRES_IN
 
-        await this.tokenRepository.create(token)
+        await this.TokensRepository.create(token)
 
         return res.status(200).send({
             message: "Login successfully",

@@ -37,6 +37,7 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
     find(item: T): Promise<T[]> {
         throw new Error("Method not implemented.");
     }
+
     async findOne(filter: FilterQuery<T>): Promise<T | null> {
         let doc = await this.model.findOne(filter)
         if (!!doc){
@@ -44,4 +45,5 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
         }
         else return null
     }
+
 }
