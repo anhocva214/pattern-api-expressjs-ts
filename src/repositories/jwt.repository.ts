@@ -1,6 +1,6 @@
 import { User } from "@models/user.model";
 import { Env } from "@shared/constants";
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export default class JwtRepository {
     private secret: string;
@@ -18,5 +18,12 @@ export default class JwtRepository {
         }, this.secret, { expiresIn });
     }
 
+    verifyAccessToken(token: string): {
+        _id: string,
+        role: string
+    }{
+        let payload = jwt.verify(token, this.secret) as JwtPayload;
+        return payload.data
+    }
 
 }
