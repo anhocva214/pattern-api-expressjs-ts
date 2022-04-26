@@ -19,6 +19,8 @@ export default class UserController {
     // Regiser new user
     async register(req: Request, res: Response){
         let user = new User(req.body)
+        user.password = HashMD5(user.password);
+        user.role = 'user'
         let newUser = await this.usersRepository.create(user)
         return res.status(OK).send({message: "Register successfully", user: newUser})
     }

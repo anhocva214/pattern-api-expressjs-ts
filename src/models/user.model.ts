@@ -1,9 +1,10 @@
 import { Schema, model } from 'mongoose';
+import BaseModel from '.';
 
 
 
-export class User {
-    _id?: string;
+export class User extends BaseModel{
+    _id: string;
     username: string;
     password: string;
     email: string;
@@ -13,6 +14,7 @@ export class User {
     constructor();
     constructor(user: User);
     constructor(obj?: any) {
+        super(obj);
         this._id = obj?._id || '';
         this.username = obj?.username || "";
         this.email = obj?.email || "";
@@ -30,7 +32,10 @@ const userSchema = new Schema({
     username: String,
     password: String,
     fullname: String,
+    email: String,
     role: String,
+    created_at: String,
+    updated_at: String
 })
 
 export const UserModel = model<User>('User', userSchema);

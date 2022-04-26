@@ -16,7 +16,13 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
 
     async create(item: T) {
         let timestamp = new Date().getTime()*10000
-        let doc = await this.model.create({...item, _id: Types.ObjectId(timestamp)})
+        let created_at = new Date().toUTCString()
+        let doc = await this.model.create({
+            ...item, 
+            _id: Types.ObjectId(timestamp),
+            created_at,
+            updated_at: ''
+        })
         return new this.ClassObj(doc.toObject())
     }
 

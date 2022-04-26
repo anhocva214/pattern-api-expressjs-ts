@@ -10,6 +10,24 @@ export class UsersValidator extends BaseValidator {
                 rules: [
                     'required'
                 ]
+            },
+            {
+                field: 'fullname',
+                rules: [
+                    'required'
+                ]
+            },
+            {
+                field: 'email',
+                rules: [
+                    'required'
+                ]
+            },
+            {
+                field: 'username',
+                rules: [
+                    'required'
+                ]
             }
         ])
     }
