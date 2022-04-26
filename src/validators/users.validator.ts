@@ -21,7 +21,8 @@ export class UsersValidator extends BaseValidator {
                 field: 'email',
                 rules: [
                     'required',
-                    'isEmail'
+                    'isEmail',
+                    'unique:User'
                 ]
             },
             {
