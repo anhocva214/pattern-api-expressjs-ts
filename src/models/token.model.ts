@@ -4,6 +4,7 @@ import BaseModel from '.';
 
 export class Token extends BaseModel {
     payload: string;
+    expires_in: number;
     module_id: string;
 
     constructor();
@@ -12,12 +13,14 @@ export class Token extends BaseModel {
         super(obj);
         this.payload = obj?.payload || '';
         this.module_id = obj?.module_id || '';
+        this.expires_in  = obj?.expires_in || 0;
     }
 }
 
 
 const tokenSchema = new Schema({
     payload: String,
+    expires_in: Number,
     module_id: String,
     created_at: String,
     updated_at: String

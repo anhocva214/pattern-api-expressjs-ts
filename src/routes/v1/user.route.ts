@@ -28,6 +28,11 @@ class UsersRouter {
             this.validator.register(),
             this.controller.register.bind(this.controller)
         )
+        this.router.post(
+            this.path('/login'),
+            this.validator.login(),
+            this.controller.login.bind(this.controller)
+        )
     }
 
     getRouter(){

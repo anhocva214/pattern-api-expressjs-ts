@@ -7,30 +7,32 @@ export class UsersValidator extends BaseValidator {
         return this.validate([
             {
                 field: 'password',
-                rules: [
-                    'required',
-                ]
+                rules: ['required',]
             },
             {
                 field: 'fullname',
-                rules: [
-                    'required'
-                ]
+                rules: ['required']
             },
             {
                 field: 'email',
-                rules: [
-                    'required',
-                    'isEmail',
-                    'unique:User'
-                ]
+                rules: ['required', 'isEmail', 'unique:User']
             },
             {
                 field: 'username',
-                rules: [
-                    'required',
-                    'unique:User'
-                ]
+                rules: ['required', 'unique:User']
+            }
+        ])
+    }
+
+    login() {
+        return this.validate([
+            {
+                field: 'username',
+                rules: ['required']
+            },
+            {
+                field: 'password',
+                rules: ['required']
             }
         ])
     }

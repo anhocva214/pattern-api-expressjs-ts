@@ -1,7 +1,8 @@
+import IObj from "@interfaces/obj.interface";
 import IReadRepository from "@interfaces/read-repository.interface";
 import IWriteRepository from "@interfaces/write-repository.interface";
 import { randomIntNumber } from "@shared/number";
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { ClassificationType } from "typescript";
 
 export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRepository<T> {
@@ -14,7 +15,7 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
         this.ClassObj = ClassObj;
     }
 
-    async create(item: T) {
+    async create(item: T): Promise<T> {
         let timestamp = new Date().getTime()*10000
         let created_at = new Date().toUTCString()
         let doc = await this.model.create({
@@ -35,7 +36,11 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
     find(item: T): Promise<T[]> {
         throw new Error("Method not implemented.");
     }
-    findOne(id: string): Promise<T> {
-        throw new Error("Method not implemented.");
+    async findOne(filter: FilterQuery<T>): Promise<T | null> {
+        let doc = await this.model.findOne(filter)
+        if (!!doc){
+            return new this.ClassObj(doc.toObject())
+        }
+        else return null
     }
 }
