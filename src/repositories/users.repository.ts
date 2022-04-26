@@ -1,5 +1,4 @@
 import { User, UserDTO, UserModel } from "@models/user.model";
-import { model } from "mongoose";
 import { BaseRepository } from "."
 
 

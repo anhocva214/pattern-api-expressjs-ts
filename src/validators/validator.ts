@@ -1,5 +1,8 @@
 import {IErrorValidator, IObjValidate} from "@interfaces/validator.interface";
 import IObj from "@interfaces/obj.interface";
+import validator from 'validator';
+import { model } from "mongoose";
+
 
 
 export default class Validator {
@@ -11,24 +14,29 @@ export default class Validator {
         this.errors = {}
     }
 
-    validate(objValidate: IObjValidate[]) {
-        objValidate.forEach(item => {
-            item.rules.forEach(rule => {
-                let value, ruleName;
-                if (rule.indexOf(":") >= 0) {
-                    value = rule.split(":")[1]; 
-                    ruleName = rule.split(":")[0]
-                }
-                else{
-                    ruleName = rule
-                }
-                
-                let {msg, error} = this.rules()[ruleName as any](this.obj, item.field, value)
-                if (error){
-                    this.addError(item.field, msg)
-                }
+    async validate(objValidate: IObjValidate[]) {
+        await Promise.all(
+            objValidate.map(async item => {
+                await Promise.all(
+                    item.rules.map( async rule => {
+                        let value, ruleName;
+                        if (rule.indexOf(":") >= 0) {
+                            value = rule.split(":")[1]; 
+                            ruleName = rule.split(":")[0]
+                        }
+                        else{
+                            ruleName = rule
+                        }
+                        
+                        let {msg, error} = await this.rules()[ruleName as any](this.obj, item.field, value)
+                        if (error){
+                            this.addError(item.field, msg)
+                            // item.rules.length = item.rules.indexOf(rule)
+                        }
+                    })
+                )
             })
-        })
+        )
     }
 
     private addError(field: string, message: string) {
@@ -44,12 +52,15 @@ export default class Validator {
 
     private rules(): any {
         return {
-            required: this.required
+            required: this.required,
+            isNumeric: this.isNumeric,
+            isEmail: this.isEmail,
+            unique: this.unique
         }
     }
 
 
-    private required(obj: IObj, field: string, value?: any) {        
+    private async required(obj: IObj, field: string, value?: any) {        
         if (!obj[field]) {
             return {
                 error: true,
@@ -59,6 +70,46 @@ export default class Validator {
         else return {
             error: false,
             msg: ''
+        }
+    }
+
+    private async unique(obj: IObj, field: string, value?: any) {
+        let item = await model(value).findOne({[field]: obj[field]})
+        if (!!item){
+            return {
+                error: true,
+                msg: ":field is exists"
+            }
+        }
+        else return {
+            error: false,
+            msg: ""
+        }
+    }
+
+    private async isNumeric(obj: IObj, field: string, value?: any){
+        if (!validator.isNumeric(obj[field])){
+            return {
+                error: true,
+                msg: ":field is not numberic"
+            }
+        }
+        else return {
+            error: false,
+            msg: ""
+        }
+    }
+
+    private async isEmail(obj: IObj, field: string, value?: any){
+        if (!validator.isEmail(obj[field])){
+            return {
+                error: true,
+                msg: ":field is not email format "
+            }
+        }
+        else return {
+            error: false,
+            msg: ""
         }
     }
 }

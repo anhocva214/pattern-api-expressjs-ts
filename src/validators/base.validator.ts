@@ -26,7 +26,7 @@ export default class BaseValidator {
         return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             // console.log(req.body)
             let validator = new Validator(req.body)
-            validator.validate(objValidate)
+            await validator.validate(objValidate)
             // await Promise.all(validations.map(validation => validation.run(req)));
 
             // const errors = validationResult(req);

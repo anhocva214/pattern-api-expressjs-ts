@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import UserController from '@controllers/user.controller';
 import { UsersValidator } from '@validators/users.validator';
+import middleware from '@middleware/jwt.middleware';
 
 
 
@@ -27,6 +28,21 @@ class UsersRouter {
             this.path('/register'), 
             this.validator.register(),
             this.controller.register.bind(this.controller)
+        )
+        this.router.post(
+            this.path('/login'),
+            this.validator.login(),
+            this.controller.login.bind(this.controller)
+        )
+        this.router.get(
+            this.path('/authenticate'),
+            middleware('user'),
+            this.controller.authenticate.bind(this.controller)
+        )
+        this.router.get(
+            this.path('/logout'),
+            middleware('user'),
+            this.controller.logout.bind(this.controller)
         )
     }
 
