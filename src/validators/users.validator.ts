@@ -8,7 +8,7 @@ export class UsersValidator extends BaseValidator {
             {
                 field: 'password',
                 rules: [
-                    'required'
+                    'required',
                 ]
             },
             {
@@ -20,13 +20,15 @@ export class UsersValidator extends BaseValidator {
             {
                 field: 'email',
                 rules: [
-                    'required'
+                    'required',
+                    'isEmail'
                 ]
             },
             {
                 field: 'username',
                 rules: [
-                    'required'
+                    'required',
+                    'unique:User'
                 ]
             }
         ])
