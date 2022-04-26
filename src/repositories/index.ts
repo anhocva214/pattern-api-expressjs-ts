@@ -31,9 +31,11 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
     update(id: string, item: T): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    delete(id: string): Promise<boolean> {
-        throw new Error("Method not implemented.");
+
+    async deleteOne(filter: FilterQuery<T>): Promise<void> {
+        await this.model.deleteOne(filter)
     }
+
     find(item: T): Promise<T[]> {
         throw new Error("Method not implemented.");
     }

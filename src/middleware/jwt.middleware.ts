@@ -20,11 +20,12 @@ export default function middleware(role: string) {
             
             if (payload.role != role) return res.status(401).send({message: 'Role is not allowed'})
 
-            let token = tokensRepository.findOne({module_id: payload._id, payload: accessToken})
+            let token = await tokensRepository.findOne({module_id: payload._id, payload: accessToken})
 
             if (!token) return res.status(401).send({message: 'access_token is inactive'})
 
             req.user = await usersRepository.findOne({_id: payload._id})
+            req.tokenId = token._id;
     
             next()
         }

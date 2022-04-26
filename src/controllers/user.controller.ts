@@ -15,14 +15,14 @@ export default class UserController {
     private usersRepository: UsersRepository;
     private jwtRepository: JwtRepository;
     private LOGIN_EXPIRES_IN: number;
-    private TokensRepository: TokensRepository;
+    private tokensRepository: TokensRepository;
     
     constructor(){
         this.user = new User();
         this.usersRepository = new UsersRepository();
         this.jwtRepository = new JwtRepository();
         this.LOGIN_EXPIRES_IN = 60*60*8
-        this.TokensRepository = new TokensRepository();
+        this.tokensRepository = new TokensRepository();
     }
 
     // Regiser new user
@@ -47,7 +47,7 @@ export default class UserController {
         token.payload = this.jwtRepository.login(user, this.LOGIN_EXPIRES_IN)
         token.expires_in = this.LOGIN_EXPIRES_IN
 
-        await this.TokensRepository.create(token)
+        await this.tokensRepository.create(token)
 
         return res.status(200).send({
             message: "Login successfully",
@@ -62,7 +62,8 @@ export default class UserController {
 
     // logout
     async logout(req: Request, res: Response){
-       
+        await this.tokensRepository.deleteOne({module_id: req.user._id, _id: req.tokenId})
+        return res.status(OK).send({message: "Logout successfully"})
     }
 
     // check access token

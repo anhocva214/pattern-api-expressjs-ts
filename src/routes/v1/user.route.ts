@@ -39,6 +39,11 @@ class UsersRouter {
             middleware('user'),
             this.controller.authenticate.bind(this.controller)
         )
+        this.router.get(
+            this.path('/logout'),
+            middleware('user'),
+            this.controller.logout.bind(this.controller)
+        )
     }
 
     getRouter(){
