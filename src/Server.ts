@@ -48,7 +48,8 @@ if (process.env.NODE_ENV === 'production') {
 declare module "express" {
     export interface Request {
         user?: any;
-        tokenId?: string
+        tokenId?: string;
+        payloadValidate?: any
     }
 }
 

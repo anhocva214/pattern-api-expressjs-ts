@@ -44,6 +44,17 @@ class UsersRouter {
             middleware('user'),
             this.controller.logout.bind(this.controller)
         )
+        this.router.put(
+            this.path('/'),
+            middleware('user'),
+            this.validator.update(),
+            this.controller.update.bind(this.controller)
+        )
+        this.router.get(
+            this.path('/me'),
+            middleware('user'),
+            this.controller.myInfo.bind(this.controller)
+        )
     }
 
     getRouter(){
