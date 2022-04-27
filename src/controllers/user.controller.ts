@@ -73,9 +73,17 @@ export default class UserController {
 
     // update info
     async update(req: Request, res: Response){
-       
+        let user = new User(req.user);
+        let payloadValidate = req.payloadValidate;
+        await this.usersRepository.updateOne({_id: user._id}, {...payloadValidate})
+        return res.status(200).send({message: "Update successfully"})
     }
 
+    // get my info
+    async myInfo(req: Request, res: Response){
+        let user = new User(req.user);
+        return res.status(200).send({user})
+    }
 
 }
 

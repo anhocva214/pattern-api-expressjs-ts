@@ -2,6 +2,7 @@ import {IErrorValidator, IObjValidate} from "@interfaces/validator.interface";
 import IObj from "@interfaces/obj.interface";
 import validator from 'validator';
 import { model } from "mongoose";
+import { User } from "@models/user.model";
 
 
 
@@ -74,7 +75,12 @@ export default class Validator {
     }
 
     private async unique(obj: IObj, field: string, value?: any) {
-        let item = await model(value).findOne({[field]: obj[field]})
+        let values = value.split(",")
+        let fieldCol = values[1];
+        let ignore = values[2];
+
+        let item = await model(value.split(",")[0]).findOne({[fieldCol]: obj[field]})
+
         if (!!item){
             return {
                 error: true,

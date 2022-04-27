@@ -2,7 +2,7 @@ import IObj from "@interfaces/obj.interface";
 import IReadRepository from "@interfaces/read-repository.interface";
 import IWriteRepository from "@interfaces/write-repository.interface";
 import { randomIntNumber } from "@shared/number";
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { ClassificationType } from "typescript";
 import moment from "moment";
 
@@ -28,8 +28,8 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
         return new this.ClassObj(doc.toObject())
     }
 
-    update(id: string, item: T): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async updateOne(filter: FilterQuery<T>, item: UpdateQuery<T>): Promise<void> {
+        await this.model.updateOne(filter, item)
     }
 
     async deleteOne(filter: FilterQuery<T>): Promise<void> {
