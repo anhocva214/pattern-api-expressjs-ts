@@ -19,7 +19,7 @@ export class UsersValidator extends BaseValidator {
             },
             {
                 field: 'username',
-                rules: ['required', 'unique:User']
+                rules: ['required', 'unique:User,username']
             }
         ])
     }
