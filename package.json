@@ -29,7 +29,8 @@
     "@middleware": "dist/middleware",
     "@validators": "dist/validators",
     "@interfaces": "dist/interfaces",
-    "@repositories": "dist/repositories"
+    "@repositories": "dist/repositories",
+    "@resources": "dist/resources"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",

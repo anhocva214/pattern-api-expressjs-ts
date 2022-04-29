@@ -1,0 +1,6 @@
+{
+    "is_required": "is required",
+    "is_exists": "is exists",
+    "is_not_numberic": "not numberic",
+    "is_not_email_format": "is not email format"
+}

@@ -3,16 +3,21 @@ import IObj from "@interfaces/obj.interface";
 import validator from 'validator';
 import { model } from "mongoose";
 import { User } from "@models/user.model";
+import { TLang } from "@interfaces/trans.interface";
+import { trans } from "@resources/trans";
+import { TFieldname } from "@interfaces/trans.interface";
 
 
 
 export default class Validator {
     private obj: IObj
     errors: IErrorValidator
+    private lang: TLang
 
-    constructor(obj: IObj) {
+    constructor(obj: IObj, lang: TLang) {
         this.obj = obj;
         this.errors = {}
+        this.lang = lang
     }
 
     async validate(objValidate: IObjValidate[]) {
@@ -29,9 +34,9 @@ export default class Validator {
                             ruleName = rule
                         }
                         
-                        let {msg, error} = await this.rules()[ruleName as any](this.obj, item.field, value)
+                        let {msg, error} = await this.rules()[ruleName as any](this.obj, item.field, value, this.lang)
                         if (error){
-                            this.addError(item.field, msg)
+                            this.addError(item.field as any, msg)
                             // item.rules.length = item.rules.indexOf(rule)
                         }
                     })
@@ -40,11 +45,11 @@ export default class Validator {
         )
     }
 
-    private addError(field: string, message: string) {
+    private addError(field: TFieldname, message: string) {
         if (Object.keys(this.errors).indexOf(field) < 0) {
             this.errors[field] = []
-        }
-        this.errors[field].push(message.replace(":field", field))
+         }
+        this.errors[field].push(message.replace(":field", trans.validator[this.lang].fieldname[field] || field))
     }
 
     hasError(){
@@ -61,11 +66,11 @@ export default class Validator {
     }
 
 
-    private async required(obj: IObj, field: string, value?: any) {        
+    private async required(obj: IObj, field: string, value: any, lang: TLang) {        
         if (!obj[field]) {
             return {
                 error: true,
-                msg: ":field is required"
+                msg: `:field ${trans.validator[lang].message.is_required}`
             }
         }
         else return {
@@ -74,7 +79,7 @@ export default class Validator {
         }
     }
 
-    private async unique(obj: IObj, field: string, value?: any) {
+    private async unique(obj: IObj, field: string, value: any, lang: TLang) {
         let values = value.split(",")
         let fieldCol = values[1];
         let ignore = values[2];
@@ -84,7 +89,7 @@ export default class Validator {
         if (!!item){
             return {
                 error: true,
-                msg: ":field is exists"
+                msg: `:field ${trans.validator[lang].message.is_exists}`
             }
         }
         else return {
@@ -93,11 +98,11 @@ export default class Validator {
         }
     }
 
-    private async isNumeric(obj: IObj, field: string, value?: any){
+    private async isNumeric(obj: IObj, field: string, value: any, lang: TLang){
         if (!validator.isNumeric(obj[field])){
             return {
                 error: true,
-                msg: ":field is not numberic"
+                msg: `:field ${trans.validator[lang].message.is_not_numberic}`
             }
         }
         else return {
@@ -106,11 +111,11 @@ export default class Validator {
         }
     }
 
-    private async isEmail(obj: IObj, field: string, value?: any){
+    private async isEmail(obj: IObj, field: string, value: any, lang: TLang){
         if (!validator.isEmail(obj[field])){
             return {
                 error: true,
-                msg: ":field is not email format "
+                msg: `:field ${trans.validator[lang].message.is_not_email_format}`
             }
         }
         else return {

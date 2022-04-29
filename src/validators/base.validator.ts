@@ -1,3 +1,4 @@
+import { TLang } from '@interfaces/trans.interface';
 import { IObjValidate } from '@interfaces/validator.interface';
 import { User } from '@models/user.model';
 import express from 'express';
@@ -25,8 +26,8 @@ export default class BaseValidator {
 
     protected validate(objValidate: IObjValidate[]) {
         return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            // console.log(req.body)
-            let validator = new Validator(req.body)
+            let lang: TLang = req.headers['accept-language']  || 'en' as any
+            let validator = new Validator(req.body, lang)
             await validator.validate(objValidate)
             
             let payload : any = {}
