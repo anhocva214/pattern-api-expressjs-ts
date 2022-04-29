@@ -93,6 +93,9 @@
       ],
       "@server": [
         "src/Server.ts"
+      ],
+      "@resources/*": [
+        "src/resources/*"
       ]
     },
   },
