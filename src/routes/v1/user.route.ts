@@ -2,7 +2,14 @@ import { Router } from 'express';
 import UserController from '@controllers/user.controller';
 import { UsersValidator } from '@validators/users.validator';
 import middleware from '@middleware/jwt.middleware';
+import rateLimit from 'express-rate-limit'
 
+const apiLimiter = rateLimit({
+	windowMs: 2 * 60 * 1000, // 2 minutes
+	max: 5, // Limit each IP to 5 requests per `window` (here, per 2 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
 
 
 
@@ -54,6 +61,11 @@ class UsersRouter {
             this.path('/me'),
             middleware('user'),
             this.controller.myInfo.bind(this.controller)
+        )
+        this.router.get(
+            this.path('/all'),
+            apiLimiter,
+            this.controller.getAll.bind(this.controller)
         )
     }
 

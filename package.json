@@ -90,6 +90,7 @@
     "eslint": "^7.28.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^6.4.0",
     "find": "^0.3.0",
     "fs-extra": "^10.0.0",
     "googleapis": "^75.0.0",
