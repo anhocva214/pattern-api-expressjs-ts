@@ -68,7 +68,7 @@ export default class UserController {
 
     // check access token
     async authenticate(req: Request, res: Response){
-        return res.status(OK).send({data: req.user})
+        return res.status(OK).send(req.user)
     }
 
     // update info
@@ -82,8 +82,13 @@ export default class UserController {
     // get my info
     async myInfo(req: Request, res: Response){
         let user = new User(req.user);
-        return res.status(200).send({user})
+        return res.status(200).send(user)
     }
 
+    // get all users
+    async getAll(req: Request, res: Response){
+        let users = await this.usersRepository.find({})
+        return res.status(200).send(users)
+    }
 }
 

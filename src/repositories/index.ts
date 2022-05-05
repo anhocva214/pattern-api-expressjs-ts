@@ -36,8 +36,9 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
         await this.model.deleteOne(filter)
     }
 
-    find(item: T): Promise<T[]> {
-        throw new Error("Method not implemented.");
+    async find(filter: FilterQuery<T>): Promise<T[]> {
+        let doc = await this.model.find(filter)
+        return doc.map(item => new this.ClassObj(item))
     }
 
     async findOne(filter: FilterQuery<T>): Promise<T | null> {
