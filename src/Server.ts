@@ -12,6 +12,7 @@ import logger from '@shared/Logger';
 
 import {connectDB} from '@config/db.config'
 import v1Router from './routes/v1';
+import { TLang } from '@interfaces/trans.interface';
 
 
 connectDB()
@@ -49,16 +50,24 @@ declare module "express" {
     export interface Request {
         user?: any;
         tokenId?: string;
-        payloadValidate?: any
+        payloadValidate?: any;
+        lang?: TLang
     }
 }
+
+// Handle accept language
+function handleLanguage(req: Request, res: Response, next: NextFunction){
+    let lang = req.headers['accept-language'] as any
+    if (lang != 'vi' && lang != 'en') lang = 'en'
+    req.lang = lang;
+    next()
+}
+app.use(handleLanguage)
 
 
 // Add APIs
 app.use('/v1', v1Router);
 
-// Print API errors
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.err(err, true);
     return res.status(BAD_REQUEST).json({

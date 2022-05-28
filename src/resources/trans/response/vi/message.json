@@ -1,0 +1,7 @@
+{
+    "register_successfully": "đăng ký thành công",
+    "login_successfully": "đăng nhập thành công",
+    "login_failure": "đăng nhập thất bại",
+    "logout_successfully":"đăng xuất thành công",
+    "update_successfully":"cập nhật thành công"
+}

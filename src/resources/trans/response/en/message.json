@@ -1,0 +1,7 @@
+{
+    "register_successfully": "register successfully",
+    "login_successfully": "login successfully",
+    "login_failure": "login failure",
+    "logout_successfully":"logout successfully",
+    "update_successfully":"update successfully"
+}

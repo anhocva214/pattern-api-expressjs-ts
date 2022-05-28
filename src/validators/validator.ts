@@ -14,7 +14,7 @@ export default class Validator {
     errors: IErrorValidator
     private lang: TLang
 
-    constructor(obj: IObj, lang: TLang) {
+    constructor(obj: IObj, lang: any) {
         this.obj = obj;
         this.errors = {}
         this.lang = lang
@@ -55,16 +55,6 @@ export default class Validator {
     hasError(){
         return Object.keys(this.errors).length > 0
     }
-
-    private rules(): any {
-        return {
-            required: this.required,
-            isNumeric: this.isNumeric,
-            isEmail: this.isEmail,
-            unique: this.unique
-        }
-    }
-
 
     private async required(obj: IObj, field: string, value: any, lang: TLang) {        
         if (!obj[field]) {
@@ -121,6 +111,15 @@ export default class Validator {
         else return {
             error: false,
             msg: ""
+        }
+    }
+
+    private rules(): any {
+        return {
+            required: this.required,
+            isNumeric: this.isNumeric,
+            isEmail: this.isEmail,
+            unique: this.unique
         }
     }
 }
