@@ -8,6 +8,8 @@ import UsersRepository from '@repositories/users.repository';
 import { Token } from '@models/token.model';
 import JwtRepository from '@repositories/jwt.repository';
 import TokensRepository from '@repositories/token.repository';
+import { trans } from '@resources/trans';
+import { TLang } from '@interfaces/trans.interface';
 
 
 export default class UserController {
@@ -31,7 +33,7 @@ export default class UserController {
         user.password = HashMD5(user.password);
         user.role = 'user'
         let newUser = await this.usersRepository.create(user)
-        return res.status(OK).send({message: "Register successfully", user: newUser})
+        return res.status(OK).send({message: trans.response[req.lang as TLang].message.register_successfully, user: newUser})
     }
 
     // Login
@@ -39,7 +41,7 @@ export default class UserController {
         let {username, password} = req.body;
         let user = await this.usersRepository.findOne({username, password: HashMD5(password)})
         if (!user){
-            return res.status(401).send({message: "Login faild"})
+            return res.status(401).send({message: trans.response[req.lang as TLang].message.login_failure})
         }
 
         let token = new Token()
@@ -50,7 +52,7 @@ export default class UserController {
         await this.tokensRepository.create(token)
 
         return res.status(200).send({
-            message: "Login successfully",
+            message: trans.response[req.lang as TLang].message.login_successfully,
             user,
             token:{
                 access_token: token.payload,
@@ -63,7 +65,7 @@ export default class UserController {
     // logout
     async logout(req: Request, res: Response){
         await this.tokensRepository.deleteOne({module_id: req.user._id, _id: req.tokenId})
-        return res.status(OK).send({message: "Logout successfully"})
+        return res.status(OK).send({message: trans.response[req.lang as TLang].message.logout_successfully})
     }
 
     // check access token
@@ -76,7 +78,7 @@ export default class UserController {
         let user = new User(req.user);
         let payloadValidate = req.payloadValidate;
         await this.usersRepository.updateOne({_id: user._id}, {...payloadValidate})
-        return res.status(200).send({message: "Update successfully"})
+        return res.status(200).send({message: trans.response[req.lang as TLang].message.update_successfully})
     }
 
     // get my info
