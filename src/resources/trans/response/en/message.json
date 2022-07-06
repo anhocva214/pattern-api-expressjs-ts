@@ -3,5 +3,8 @@
     "login_successfully": "login successfully",
     "login_failure": "login failure",
     "logout_successfully":"logout successfully",
-    "update_successfully":"update successfully"
+    "update_successfully":"update successfully",
+    "invalid_authentication_code": "invalid authentication code",
+    "create_successfully": "create successfully",
+    "remove_successfully": "remove successfully"
 }

@@ -3,5 +3,8 @@
     "login_successfully": "đăng nhập thành công",
     "login_failure": "đăng nhập thất bại",
     "logout_successfully":"đăng xuất thành công",
-    "update_successfully":"cập nhật thành công"
+    "update_successfully":"cập nhật thành công",
+    "invalid_authentication_code": "mã xác thực không hợp lệ",
+    "create_successfully": "tạo thành công",
+    "remove_successfully": "loại bỏ thành công"
 }

@@ -2,5 +2,13 @@
     "fullname": "fullname",
     "username": "username",
     "email": "email",
-    "password": "password"
+    "password": "password",
+    "role": "role",
+    "name": "name",
+    "title": "title",
+    "category": "category",
+    "content": "content",
+    "question": "question",
+    "answer": "answer",
+    "description": "description"
 }
