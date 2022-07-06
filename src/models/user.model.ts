@@ -4,7 +4,6 @@ import BaseModel from '.';
 
 
 export class User extends BaseModel{
-    _id: string;
     username: string;
     password: string;
     email: string;
@@ -15,7 +14,6 @@ export class User extends BaseModel{
     constructor(user: User);
     constructor(obj?: any) {
         super(obj);
-        this._id = obj?._id || '';
         this.username = obj?.username || "";
         this.email = obj?.email || "";
         this.password = obj?.password || "";
