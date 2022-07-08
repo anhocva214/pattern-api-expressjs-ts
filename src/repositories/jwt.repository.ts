@@ -1,12 +1,12 @@
+import { ENV } from "@helpers/env.helper";
 import { User } from "@models/user.model";
-import { Env } from "@shared/constants";
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export default class JwtRepository {
     private secret: string;
 
     constructor() {
-        this.secret = Env.JWT_SIGNING_KEY || '';
+        this.secret = ENV.JWT_SIGNING_KEY || '';
     }
 
     login(user: User, expiresIn: number) {

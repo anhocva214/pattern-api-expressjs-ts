@@ -8,7 +8,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
 
-import logger from '@shared/Logger';
+import logger from 'src/helpers/Logger';
 
 import {connectDB} from '@config/db.config'
 import v1Router from './routes/v1';
