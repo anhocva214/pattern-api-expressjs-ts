@@ -1,9 +1,6 @@
-import IObj from "@interfaces/obj.interface";
 import IReadRepository from "@interfaces/read-repository.interface";
 import IWriteRepository from "@interfaces/write-repository.interface";
-import { randomIntNumber } from "@shared/number";
 import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
-import { ClassificationType } from "typescript";
 import moment from "moment";
 
 export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRepository<T> {
@@ -23,13 +20,16 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
             ...item, 
             _id: Types.ObjectId(timestamp),
             created_at,
-            updated_at: ''
+            updated_at: created_at
         })
         return new this.ClassObj(doc.toObject())
     }
 
     async updateOne(filter: FilterQuery<T>, item: UpdateQuery<T>): Promise<void> {
-        await this.model.updateOne(filter, item)
+        await this.model.updateOne(filter, {
+            ...item,
+            updated_at: moment.utc().valueOf() 
+        })
     }
 
     async deleteOne(filter: FilterQuery<T>): Promise<void> {
@@ -47,6 +47,10 @@ export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRep
             return new this.ClassObj(doc.toObject())
         }
         else return null
+    }
+
+    async count(filter: FilterQuery<T>){
+        return await this.model.count(filter)
     }
 
 }
