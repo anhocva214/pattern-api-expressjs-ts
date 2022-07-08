@@ -8,16 +8,19 @@ import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
 
-import logger from '@shared/Logger';
 
 import {connectDB} from '@config/db.config'
 import v1Router from './routes/v1';
-import { TLang } from '@interfaces/trans.interface';
+import Logger from '@services/logger.service';
+import { TLang } from '@resources/trans/interface';
 
-
+const logger = new Logger()
 connectDB()
     .then(() => logger.info("Connect database success"))
-    .catch(err => logger.err("Connect database faild: ", err))
+    .catch(err => logger.errorApp({
+        where: "connectDB",
+        detail: err
+    }))
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -69,7 +72,10 @@ app.use(handleLanguage)
 app.use('/v1', v1Router);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.err(err, true);
+    logger.errorApp({
+        where: "Server: app.use",
+        detail: err
+    })
     return res.status(BAD_REQUEST).json({
         error: err.message,
     });

@@ -73,11 +73,11 @@
       "@models/*": [
         "src/models/*"
       ],
-      "@shared/*": [
-        "src/shared/*"
+      "@helpers/*": [
+        "src/helpers/*"
       ],
-      "@repositories/*": [
-        "src/repositories/*"
+      "@stores/*": [
+        "src/stores/*"
       ],
       "@controllers/*": [
         "src/controllers/*"
@@ -88,8 +88,8 @@
       "@validators/*": [
         "src/validators/*"
       ],
-      "@interfaces/*": [
-        "src/interfaces/*"
+      "@services/*": [
+        "src/services/*"
       ],
       "@server": [
         "src/Server.ts"

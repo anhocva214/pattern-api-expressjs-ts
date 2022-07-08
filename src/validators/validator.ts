@@ -1,11 +1,9 @@
-import {IErrorValidator, IObjValidate} from "@interfaces/validator.interface";
-import IObj from "@interfaces/obj.interface";
 import validator from 'validator';
 import { model } from "mongoose";
 import { User } from "@models/user.model";
-import { TLang } from "@interfaces/trans.interface";
 import { trans } from "@resources/trans";
-import { TFieldname } from "@interfaces/trans.interface";
+import { TFieldname, TLang } from "@resources/trans/interface";
+import { IErrorValidator, IObj, IObjValidate } from "./interface";
 
 
 

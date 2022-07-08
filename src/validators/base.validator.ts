@@ -1,7 +1,6 @@
-import { TLang } from '@interfaces/trans.interface';
-import { IObjValidate } from '@interfaces/validator.interface';
-import { User } from '@models/user.model';
+
 import express from 'express';
+import { IObjValidate } from './interface';
 import Validator from './validator';
 
 export default class BaseValidator {

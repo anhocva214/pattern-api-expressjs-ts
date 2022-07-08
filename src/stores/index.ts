@@ -1,9 +1,7 @@
-import IReadRepository from "@interfaces/read-repository.interface";
-import IWriteRepository from "@interfaces/write-repository.interface";
 import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import moment from "moment";
 
-export abstract class BaseRepository<T> implements IWriteRepository<T>, IReadRepository<T> {
+export abstract class BaseStore<T> {
 
     protected model: Model<T>;
     protected ClassObj: any;

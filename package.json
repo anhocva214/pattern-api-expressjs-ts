@@ -22,13 +22,13 @@
   "_moduleAliases": {
     "@config": "dist/config",
     "@models": "dist/models",
-    "@shared": "dist/shared",
+    "@helpers": "dist/helpers",
     "@server": "dist/Server",
     "@controllers": "dist/controllers",
     "@middleware": "dist/middleware",
     "@validators": "dist/validators",
-    "@interfaces": "dist/interfaces",
-    "@repositories": "dist/repositories",
+    "@services": "dist/services",
+    "@stores": "dist/stores",
     "@resources": "dist/resources"
   },
   "eslintConfig": {
@@ -81,6 +81,7 @@
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
+    "bcrypt": "^5.0.1",
     "command-line-args": "^5.1.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -114,6 +115,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/crypto-js": "^4.0.2",
     "@types/validator": "^13.7.2"
   }
