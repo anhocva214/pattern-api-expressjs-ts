@@ -2,7 +2,6 @@ import StatusCodes, {  } from 'http-status-codes';
 import { Request, Response } from 'express';
 const { FORBIDDEN, CREATED, OK, BAD_GATEWAY , BAD_REQUEST} = StatusCodes;
 import {User} from '@models/user.model';
-import {HashMD5} from '@shared/functions'
 import {v1 as uuidv1} from 'uuid'
 import UsersRepository from '@repositories/users.repository';
 import { Token } from '@models/token.model';
@@ -10,6 +9,8 @@ import JwtRepository from '@repositories/jwt.repository';
 import TokensRepository from '@repositories/token.repository';
 import { trans } from '@resources/trans';
 import { TLang } from '@interfaces/trans.interface';
+import bcrypt from 'bcrypt'
+import { ENV } from '@helpers/env.helper';
 
 
 export default class UserController {
@@ -30,7 +31,7 @@ export default class UserController {
     // Regiser new user
     async register(req: Request, res: Response){
         let user = new User(req.body)
-        user.password = HashMD5(user.password);
+        user.password = await bcrypt.hash(user.password, await bcrypt.genSalt())
         user.role = 'user'
         let newUser = await this.usersRepository.create(user)
         return res.status(OK).send({message: trans.response[req.lang as TLang].message.register_successfully, user: newUser})
@@ -39,8 +40,9 @@ export default class UserController {
     // Login
     async login(req: Request, res: Response){
         let {username, password} = req.body;
-        let user = await this.usersRepository.findOne({username, password: HashMD5(password)})
-        if (!user){
+        let user = await this.usersRepository.findOne({username})
+
+        if (!user || !await bcrypt.compare(password, user.password)){
             return res.status(401).send({message: trans.response[req.lang as TLang].message.login_failure})
         }
 
