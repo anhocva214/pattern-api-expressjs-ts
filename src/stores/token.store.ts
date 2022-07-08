@@ -1,8 +1,8 @@
 import { Token, TokenModel } from "@models/token.model";
-import { BaseRepository } from "."
+import { BaseStore } from ".";
 
 
-export default class TokensRepository extends BaseRepository<Token>{
+export default class TokensStore extends BaseStore<Token>{
 
     constructor(){
         super(TokenModel, Token)

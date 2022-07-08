@@ -27,8 +27,8 @@
     "@controllers": "dist/controllers",
     "@middleware": "dist/middleware",
     "@validators": "dist/validators",
-    "@interfaces": "dist/interfaces",
-    "@repositories": "dist/repositories",
+    "@services": "dist/services",
+    "@stores": "dist/stores",
     "@resources": "dist/resources"
   },
   "eslintConfig": {

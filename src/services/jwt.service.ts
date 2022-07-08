@@ -2,7 +2,7 @@ import { ENV } from "@helpers/env.helper";
 import { User } from "@models/user.model";
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
-export default class JwtRepository {
+export default class JwtService {
     private secret: string;
 
     constructor() {
