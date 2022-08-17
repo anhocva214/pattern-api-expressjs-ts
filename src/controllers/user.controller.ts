@@ -34,7 +34,7 @@ export default class UserController {
         user.password = await bcrypt.hash(user.password, await bcrypt.genSalt())
         user.role = 'user'
         let newUser = await this.usersStore.create(user)
-        return res.status(OK).send({message: trans.response[req.lang as TLang].message.register_successfully, user: newUser})
+        return res.status(OK).send({message: trans.response[req.lang as TLang].register_successfully, user: newUser})
     }
 
     // Login
@@ -43,7 +43,7 @@ export default class UserController {
         let user = await this.usersStore.findOne({username})
 
         if (!user || !await bcrypt.compare(password, user.password)){
-            return res.status(401).send({message: trans.response[req.lang as TLang].message.login_failure})
+            return res.status(401).send({message: trans.response[req.lang as TLang].login_failure})
         }
 
         let token = new Token()
@@ -54,7 +54,7 @@ export default class UserController {
         await this.tokensStore.create(token)
 
         return res.status(200).send({
-            message: trans.response[req.lang as TLang].message.login_successfully,
+            message: trans.response[req.lang as TLang].login_successfully,
             user,
             token:{
                 access_token: token.payload,
@@ -67,7 +67,7 @@ export default class UserController {
     // logout
     async logout(req: Request, res: Response){
         await this.tokensStore.deleteOne({module_id: req.user._id, _id: req.tokenId})
-        return res.status(OK).send({message: trans.response[req.lang as TLang].message.logout_successfully})
+        return res.status(OK).send({message: trans.response[req.lang as TLang].logout_successfully})
     }
 
     // check access token
@@ -80,7 +80,7 @@ export default class UserController {
         let user = new User(req.user);
         let payloadValidate = req.payloadValidate;
         await this.usersStore.updateOne({_id: user._id}, {...payloadValidate})
-        return res.status(200).send({message: trans.response[req.lang as TLang].message.update_successfully})
+        return res.status(200).send({message: trans.response[req.lang as TLang].update_successfully})
     }
 
     // get my info

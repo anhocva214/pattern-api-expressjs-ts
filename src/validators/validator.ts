@@ -23,7 +23,6 @@ export default class Validator {
             objValidate.map(async item => {
                 await Promise.all(
                     item.rules.map( async rule => {
-                        
                         let value, ruleName;
                         if (rule.indexOf(":") >= 0) {
                             value = rule.split(":")[1];
