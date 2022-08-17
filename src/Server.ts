@@ -10,9 +10,9 @@ import 'express-async-errors';
 
 
 import {connectDB} from '@config/db.config'
-import v1Router from './routes/v1';
 import Logger from '@services/logger.service';
 import { TLang } from '@resources/trans/interface';
+import { RoutersV1 } from './routes/v1';
 
 const logger = new Logger()
 connectDB()
@@ -69,7 +69,7 @@ app.use(handleLanguage)
 
 
 // Add APIs
-app.use('/v1', v1Router);
+app.use('/v1', RoutersV1());
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.errorApp({
