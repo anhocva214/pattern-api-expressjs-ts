@@ -11,8 +11,9 @@ import 'express-async-errors';
 
 import {connectDB} from '@config/db.config'
 import Logger from '@services/logger.service';
-import { TLang } from '@resources/trans/interface';
+import { TLang } from '@resources/i18n/interface';
 import { RoutersV1 } from './routes/v1';
+import { AppError } from '@models/error';
 
 const logger = new Logger()
 connectDB()
@@ -71,16 +72,27 @@ app.use(handleLanguage)
 // Add APIs
 app.use('/v1', RoutersV1());
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.errorApp({
-        where: "Server: app.use",
-        detail: err
-    })
-    return res.status(BAD_REQUEST).json({
-        error: err.message,
-    });
-});
+app.use((err: AppError | any, req: Request, res: Response, next: NextFunction) => {
+    if (err) {
+        res.status(err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+        switch (err.constructor) {
+            case AppError:
+                err.translate(getLocaleFromRequest(req))
+                res.json(err)
+                break
+            default:
+                res.json({ message: 'System Error', detail: err.message })
+                break
+        }
+    }
+    next()
+})
 
+function getLocaleFromRequest(req: Request) {
+    const locale = req.headers['accept-language']
+    if (locale === 'en') return 'en'
+    return 'vi'
+}
 
 
 /************************************************************************************

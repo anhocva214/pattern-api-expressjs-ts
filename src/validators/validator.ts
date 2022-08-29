@@ -1,8 +1,8 @@
 import validator from 'validator';
 import { model } from "mongoose";
 import { User } from "@models/user.model";
-import { trans } from "@resources/trans";
-import { TFieldname, TLang } from "@resources/trans/interface";
+import { trans } from "@resources/i18n";
+import { TFieldname, TLang } from "@resources/i18n/interface";
 import { IErrorValidator, IObj, IObjValidate } from "./interface";
 
 
@@ -22,8 +22,8 @@ export default class Validator {
         await Promise.all(
             objValidate.map(async item => {
                 await Promise.all(
-                    item.rules.map( async rule => {
-                        let value, ruleName;
+                    item.rules.map(async rule => {
+                        let value = '', ruleName='';
                         if (rule.indexOf(":") >= 0) {
                             value = rule.split(":")[1];
                             ruleName = rule.split(":")[0]
@@ -33,15 +33,29 @@ export default class Validator {
                         }
 
                         if ((rule != 'required' && !!this.obj?.[item.field]) || rule == 'optional') {
-                            let { msg, error } = await this.rules()[ruleName as any](this.obj, item.field, value, this.lang)
+                            let rules = new Rules({
+                                key: item.field,
+                                value: this.obj?.[item.field],
+                                params: value,
+                                lang: this.lang
+                            })
+                            await rules.check(ruleName)
+                            let {error, message} = rules.result()
                             if (error) {
-                                this.addError(item.field as any, msg)
+                                this.addError(item.field as any, message)
                             }
                         }
-                        else{
-                            let { msg, error } = await this.rules()['required'](this.obj, item.field, value, this.lang)
+                        else {
+                            let rules = new Rules({
+                                key: item.field,
+                                value: this.obj?.[item.field],
+                                params: value,
+                                lang: this.lang
+                            })
+                            await rules.check('required')
+                            let {error, message} = rules.result()
                             if (error) {
-                                this.addError(item.field as any, msg)
+                                this.addError(item.field as any, message)
                             }
                         }
                     })
@@ -60,35 +74,101 @@ export default class Validator {
         this.errors[field] = Array.from(messagesSet)
     }
 
-    hasError(){
+    hasError() {
         return Object.keys(this.errors).length > 0
     }
+}
 
-    private async required(obj: IObj, field: string, value: any, lang: TLang) {        
-        if (!obj?.[field]) {
-            return {
-                error: true,
-                msg: `:field ${trans.validator[lang].message.is_required}`
-            }
-        }
-        else return {
-            error: false,
-            msg: ''
+
+
+class Rules {
+
+    error: boolean;
+    message: string;
+    key: string;
+    value: string;
+    params: string;
+    lang: TLang;
+
+    constructor(data: {
+        key: string,
+        value: string,
+        params: string,
+        lang: TLang
+    }) {
+        this.error = false;
+        this.message = ''
+        this.key = data.key;
+        this.value = data.value;
+        this.params = data.params;
+        this.lang = data.lang;
+    }
+
+    async check(ruleName: string) {
+        switch (ruleName) {
+            case 'required':
+                await this.required()
+                break;
+            case 'isNumeric':
+                await this.isNumeric()
+                break;
+            case 'isEmail':
+                await this.isEmail()
+                break;
+            case 'only':
+                await this.only()
+                break;
+            case 'optional':
+                await this.optional()
+                break;
+            case 'unique':
+                await this.unique()
+                break;
         }
     }
 
-    private async unique(obj: IObj, field: string, value: any, lang: TLang) {
-        let values = value.split(",")
-        let fieldCol = values[1];
-        let tableName = value.split(",")[0];
+    private async required() {
+        if (!this.value) {
+            this.error = true;
+            this.message = `:field ${trans.validator[this.lang].message.is_required}`
+        }
+    }
+
+    private async unique() {
+        let paramsList = this.params.split(",")
+        let fieldCol = paramsList[1];
+        let tableName = paramsList[0];
         // let ignore = values[2];
 
-        let item = await model(tableName).findOne({[fieldCol]: obj[field]})
+        let item = await model(tableName).findOne({ [fieldCol]: this.value })
+        if (!!item) {
+            this.error = true;
+            this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+        }
+    }
 
-        if (!!item){
+    private async isNumeric() {
+        if (!validator.isNumeric(this.value)) {
+            this.error = true
+            this.message = `:field ${trans.validator[this.lang].message.is_not_numberic}`
+        }
+    }
+
+    private async isEmail() {
+        if (!validator.isEmail(this.value)) {
+            this.error = true
+            this.message = `:field ${trans.validator[this.lang].message.is_not_email_format}`
+        }
+
+    }
+
+    private async only() {
+        let onlyValues: string[] = this.params.split(",");
+
+        if (onlyValues.indexOf(this.value) < 0) {
             return {
                 error: true,
-                msg: `:field ${trans.validator[lang].message.is_exists}`
+                msg: `:field ${trans.validator[this.lang].message.is_not_exist}`
             }
         }
         else return {
@@ -97,69 +177,17 @@ export default class Validator {
         }
     }
 
-    private async isNumeric(obj: IObj, field: string, value: any, lang: TLang){
-        if (!validator.isNumeric(obj[field])){
-            return {
-                error: true,
-                msg: `:field ${trans.validator[lang].message.is_not_numberic}`
-            }
-        }
-        else return {
-            error: false,
-            msg: ""
+    private async optional() {
+        if (this.value == undefined) {
+            this.error = true
+            this.message = `:field ${trans.validator[this.lang].message.is_undefined}`
         }
     }
 
-    private async isEmail(obj: IObj, field: string, value: any, lang: TLang){
-        if (!validator.isEmail(obj[field])){
-            return {
-                error: true,
-                msg: `:field ${trans.validator[lang].message.is_not_email_format}`
-            }
-        }
-        else return {
-            error: false,
-            msg: ""
-        }
-    }
-
-    private async only(obj: IObj, field: string, value: any, lang: TLang){
-        let inputValue = obj[field];
-        let onlyValues: string[] = value.split(",");
-
-        if (onlyValues.indexOf(inputValue) < 0){
-            return {
-                error: true,
-                msg: `:field ${trans.validator[lang].message.is_not_exist}`
-            }
-        }
-        else return {
-            error: false,
-            msg: ""
-        }
-    }
-
-    private async optional(obj: IObj, field: string, value: any, lang: TLang){
-        if (Object.keys(obj).indexOf(field) < 0 ){
-            return {
-                error: true,
-                msg: `:field ${trans.validator[lang].message.is_undefined}`
-            }
-        }
-        else return {
-            error: false,
-            msg: ""
-        }
-    }
-
-    private rules(): any {
+    result(){
         return {
-            required: this.required,
-            isNumeric: this.isNumeric,
-            isEmail: this.isEmail,
-            unique: this.unique,
-            only: this.only,
-            optional: this.optional
+            error: this.error,
+            message: this.message
         }
     }
 }
