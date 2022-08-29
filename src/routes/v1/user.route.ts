@@ -13,17 +13,18 @@ const apiLimiter = rateLimit({
 
 
 
-class UsersRouter {
+export default class UsersRouter {
     private router: Router;
     private controller: UserController;
     private pathBase: string;
     private validator: UsersValidator;
 
-    constructor(){
-        this.router = Router();
+    constructor(router: Router){
+        this.router = router;
         this.controller = new UserController();
         this.pathBase = '/users';
         this.validator = new UsersValidator();
+        this.instance()
     }
 
     path(p: string){
@@ -68,14 +69,4 @@ class UsersRouter {
             this.controller.getAll.bind(this.controller)
         )
     }
-
-    getRouter(){
-        return this.router
-    }
 }
-
-
-const userRouter = new UsersRouter();
-userRouter.instance()
-
-export default userRouter.getRouter();

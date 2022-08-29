@@ -4,11 +4,9 @@ import UsersRouter from './user.route'
 
 
 
-// Export the base-router
-const v1Router = Router();
-v1Router.use('/', UsersRouter)
+export function RoutersV1(){
+    const router = Router();
+    new UsersRouter(router);
 
-
-
-
-export default v1Router;
+    return router
+}
