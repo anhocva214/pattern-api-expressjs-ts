@@ -10,18 +10,14 @@ import 'express-async-errors';
 
 
 import {connectDB} from '@config/db.config'
-import Logger from '@services/logger.service';
 import { TLang } from '@resources/i18n/interface';
 import { RoutersV1 } from './routes/v1';
 import { AppError } from '@models/error';
+import logger from '@services/logger.service';
 
-const logger = new Logger()
 connectDB()
     .then(() => logger.info("Connect database success"))
-    .catch(err => logger.errorApp({
-        where: "connectDB",
-        detail: err
-    }))
+    .catch(err => logger.error(err))
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;

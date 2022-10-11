@@ -1,30 +1,36 @@
 /**
- * Setup the jet-logger.
- *
- * Documentation: https://github.com/seanpmaxwell/jet-logger
+ * Configurations of logger.
  */
+import winston from 'winston';
+import winstonRotator from 'winston-daily-rotate-file'
 
-import logger from 'jet-logger';
+const consoleConfig = [
+    new winston.transports.Console(),
+    new winston.transports.File({
+        level: 'error',
+        filename: 'logs/error.log',
+    }),
+    new winston.transports.File({
+        level: 'info',
+        filename: 'logs/info.log',
+    }),
+    new winston.transports.File({
+        level: 'warn',
+        filename: 'logs/warn.log',
+    }),
+];
 
-interface IErrorApp {
-    where: string;
-    detail: any;
-}
+const logger = winston.createLogger({
+    transports: consoleConfig,
+    format: winston.format.combine(
+        winston.format.label({
+            label: `🍀`
+        }),
+        winston.format.timestamp({
+           format: 'MMM-DD-YYYY HH:mm:ss'
+       }),
+        winston.format.printf(info => `${info.level.toUpperCase()} ${info.level == 'info' ? '🍀' : info.level == 'warn' ? '🚧' : '🔥'} ${[info.timestamp]}: ${info.message}`),
+    )
+});
 
-export default class Logger{
-
-    info(message: string){
-        logger.info(message);
-    }
-
-    warning(message: string){
-        logger.warn(message);
-    }
-    
-    errorApp(data: IErrorApp){
-        logger.err(`#----------------------------`)
-        logger.err(`# where: ${data.where}`)
-        logger.err(`# detail: ${data.detail}`)
-        logger.err(`#----------------------------`)
-    }
-}
+export default logger
