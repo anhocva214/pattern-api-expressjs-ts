@@ -16,7 +16,7 @@ export abstract class BaseStore<T> {
         let created_at = timestamp
         let doc = await this.model.create({
             ...item, 
-            _id: Types.ObjectId(timestamp),
+            _id: new Types.ObjectId(timestamp),
             created_at,
             updated_at: created_at
         })

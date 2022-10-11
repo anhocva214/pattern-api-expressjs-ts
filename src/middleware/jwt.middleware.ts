@@ -1,5 +1,5 @@
 import JwtService from "@services/jwt.service";
-import Logger from "@services/logger.service";
+import logger from "@services/logger.service";
 import TokensStore from "@stores/token.store";
 import UsersStore from "@stores/users.store";
 import { NextFunction, Request, Response } from "express";
@@ -9,7 +9,6 @@ const { UNAUTHORIZED } = StatusCode;
 const jwtService = new JwtService()
 const tokensStore = new TokensStore()
 const usersStore = new UsersStore()
-const logger = new Logger()
 
 export default function middleware(role: string) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -31,10 +30,7 @@ export default function middleware(role: string) {
             next()
         }
         catch (err: any) {
-            logger.errorApp({
-                where: "middleware",
-                detail: err
-            })
+            logger.error(err)
             if (err.message == 'jwt expired') {
                 await usersStore.deleteOne({ payload: accessToken })
                 return res.status(419).send({ message: "access_token is expired" })

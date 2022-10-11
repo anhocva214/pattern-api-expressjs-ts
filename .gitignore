@@ -5,3 +5,4 @@ package-lock.json
 jet-logger.log
 yarn.lock
 /dist/
+/logs/
