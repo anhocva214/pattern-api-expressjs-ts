@@ -15,7 +15,7 @@ export class UsersValidator extends BaseValidator {
             },
             {
                 field: 'email',
-                rules: ['required', 'isEmail', 'unique:User,email']
+                rules: ['required', 'isEmail', `unique:User,email`]
             },
             {
                 field: 'username',
@@ -41,7 +41,7 @@ export class UsersValidator extends BaseValidator {
         return this.validate([
             {
                 field: 'email',
-                rules: ['required', 'isEmail', 'unique:User,email']
+                rules: ['required', 'isEmail', 'unique:User,email,_id']
             },
             {
                 field: 'fullname',

@@ -24,7 +24,12 @@ export default function middleware(role: string) {
 
             if (!token) return res.status(401).send({ message: 'access_token is inactive' })
 
-            req.user = await usersStore.findOne({ _id: payload._id })
+            let user = await usersStore.findOne({ _id: payload._id })
+            if (!user){
+                return res.status(401).send({ message: 'user is deleted' })
+            }
+
+            req.user = user
             req.tokenId = token._id;
 
             next()

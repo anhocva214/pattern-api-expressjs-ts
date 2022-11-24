@@ -11,11 +11,13 @@ export default class Validator {
     private obj: IObj
     errors: IErrorValidator
     private lang: TLang
+    private user?: IObj
 
-    constructor(obj: IObj, lang: any) {
+    constructor(obj: IObj, lang: any, user?: IObj) {
         this.obj = obj;
         this.errors = {}
         this.lang = lang
+        this.user = user
     }
 
     async validate(objValidate: IObjValidate[]) {
@@ -23,9 +25,9 @@ export default class Validator {
             objValidate.map(async item => {
                 await Promise.all(
                     item.rules.map(async rule => {
-                        let value = '', ruleName='';
+                        let ruleParams = '', ruleName='';
                         if (rule.indexOf(":") >= 0) {
-                            value = rule.split(":")[1];
+                            ruleParams = rule.split(":")[1];
                             ruleName = rule.split(":")[0]
                         }
                         else {
@@ -36,8 +38,9 @@ export default class Validator {
                             let rules = new Rules({
                                 key: item.field,
                                 value: this.obj?.[item.field],
-                                params: value,
-                                lang: this.lang
+                                params: ruleParams,
+                                lang: this.lang,
+                                user: this.user
                             })
                             await rules.check(ruleName)
                             let {error, message} = rules.result()
@@ -49,8 +52,9 @@ export default class Validator {
                             let rules = new Rules({
                                 key: item.field,
                                 value: this.obj?.[item.field],
-                                params: value,
-                                lang: this.lang
+                                params: ruleParams,
+                                lang: this.lang,
+                                user: this.user
                             })
                             await rules.check('required')
                             let {error, message} = rules.result()
@@ -68,7 +72,7 @@ export default class Validator {
         if (Object.keys(this.errors).indexOf(field) < 0) {
             this.errors[field] = []
         }
-        this.errors[field].push(message.replace(":field", trans.validator[this.lang].fieldname[field] || field))
+        this.errors[field].push(message.replace(":field", this.capitalizeFirstLetter(trans.validator[this.lang].fieldname[field] || field)))
         let messages = this.errors[field];
         let messagesSet = new Set(messages)
         this.errors[field] = Array.from(messagesSet)
@@ -77,24 +81,29 @@ export default class Validator {
     hasError() {
         return Object.keys(this.errors).length > 0
     }
+
+    private capitalizeFirstLetter(text: string) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    }
 }
 
 
 
 class Rules {
-
     error: boolean;
     message: string;
     key: string;
     value: string;
     params: string;
     lang: TLang;
+    user?: IObj;
 
     constructor(data: {
         key: string,
         value: string,
         params: string,
-        lang: TLang
+        lang: TLang,
+        user?: IObj
     }) {
         this.error = false;
         this.message = ''
@@ -102,6 +111,7 @@ class Rules {
         this.value = data.value;
         this.params = data.params;
         this.lang = data.lang;
+        this.user = data.user;
     }
 
     async check(ruleName: string) {
@@ -127,6 +137,10 @@ class Rules {
         }
     }
 
+    /**
+     * field: 'email'
+     * rules: ['required']
+     */
     private async required() {
         if (!this.value) {
             this.error = true;
@@ -134,19 +148,38 @@ class Rules {
         }
     }
 
+    /**
+     * field: 'email'
+     * rules: ['unique:User,email'] or ['unique:User,email,id'] (ignore id)
+     */
     private async unique() {
         let paramsList = this.params.split(",")
-        let fieldCol = paramsList[1];
         let tableName = paramsList[0];
-        // let ignore = values[2];
+        let fieldCol = paramsList[1];
+        let ignoreField = paramsList[2];
+        console.log("🚀 ~ file: validator.ts ~ line 160 ~ Rules ~ unique ~ ignoreField", ignoreField)
 
-        let item = await model(tableName).findOne({ [fieldCol]: this.value })
+        let item: any = await model(tableName).findOne({ [fieldCol]: this.value })
         if (!!item) {
-            this.error = true;
-            this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+            let ignoreValue = item[ignoreField]
+            if (ignoreField == '_id') ignoreValue = item[ignoreField].toString()
+
+            if (ignoreField && this.user?.[ignoreField] != ignoreValue){
+                this.error = true;
+                this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+            }
+            else if (!ignoreField){
+                this.error = true;
+                this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+            }
+            
         }
     }
 
+    /**
+     * field: 'email'
+     * rules: ['isNumeric']
+     */
     private async isNumeric() {
         if (!validator.isNumeric(this.value)) {
             this.error = true
@@ -154,6 +187,10 @@ class Rules {
         }
     }
 
+    /**
+     * field: 'email'
+     * rules: ['isEmail']
+     */
     private async isEmail() {
         if (!validator.isEmail(this.value)) {
             this.error = true
@@ -162,6 +199,10 @@ class Rules {
 
     }
 
+    /**
+     * field: 'email'
+     * rules: ['only']
+     */
     private async only() {
         let onlyValues: string[] = this.params.split(",");
 
@@ -177,6 +218,10 @@ class Rules {
         }
     }
 
+    /**
+     * field: 'email'
+     * rules: ['optional']
+     */
     private async optional() {
         if (this.value == undefined) {
             this.error = true

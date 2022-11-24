@@ -13,10 +13,11 @@ export abstract class BaseStore<T> {
 
     async create(item: T): Promise<T> {
         let timestamp = moment.utc().valueOf()
+        console.log("🚀 ~ file: index.ts ~ line 16 ~ BaseStore<T> ~ create ~ timestamp", timestamp)
         let created_at = timestamp
         let doc = await this.model.create({
             ...item, 
-            _id: new Types.ObjectId(timestamp),
+            _id: new Types.ObjectId(parseInt((timestamp/1000).toFixed(0))),
             created_at,
             updated_at: created_at
         })
