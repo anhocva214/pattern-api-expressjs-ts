@@ -36,4 +36,4 @@ const userSchema = new Schema({
     updated_at: String
 })
 
-export const UserModel = model<User>('User', userSchema);
+export const UserModel = model<User>('User', userSchema, 'User');
