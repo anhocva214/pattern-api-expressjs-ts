@@ -1,0 +1,14 @@
+{
+    "fullname": "Fullname",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "name": "Name",
+    "title": "Title",
+    "category": "Category",
+    "content": "Content",
+    "question": "Question",
+    "answer": "Answer",
+    "description": "Description"
+}

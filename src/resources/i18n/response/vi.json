@@ -1,10 +1,10 @@
 {
-    "register_successfully": "đăng ký thành công",
-    "login_successfully": "đăng nhập thành công",
-    "login_failure": "đăng nhập thất bại",
-    "logout_successfully":"đăng xuất thành công",
-    "update_successfully":"cập nhật thành công",
-    "invalid_authentication_code": "mã xác thực không hợp lệ",
-    "create_successfully": "tạo thành công",
-    "remove_successfully": "loại bỏ thành công"
+    "register_successfully": "Đăng ký thành công",
+    "login_successfully": "Đăng nhập thành công",
+    "login_failure": "Đăng nhập thất bại",
+    "logout_successfully":"Đăng xuất thành công",
+    "update_successfully":"Cập nhật thành công",
+    "invalid_authentication_code": "Mã xác thực không hợp lệ",
+    "create_successfully": "Tạo thành công",
+    "remove_successfully": "Loại bỏ thành công"
 }

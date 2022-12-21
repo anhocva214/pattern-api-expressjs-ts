@@ -4,7 +4,6 @@ const { FORBIDDEN, CREATED, OK, BAD_GATEWAY , BAD_REQUEST} = StatusCodes;
 import {User} from '@models/user.model';
 import {v1 as uuidv1} from 'uuid'
 import { Token } from '@models/token.model';
-import { trans } from '@resources/i18n';
 import bcrypt from 'bcrypt'
 import { ENV } from '@helpers/env.helper';
 import JwtService from '@services/jwt.service';
@@ -83,7 +82,7 @@ export default class UserController {
     // logout
     async logout(req: Request, res: Response){
         await this.tokensStore.deleteOne({module_id: req.user._id, _id: req.tokenId})
-        return res.status(OK).send({message: trans.response[req.lang as TLang].logout_successfully})
+        return res.json({})
     }
 
     // check access token
@@ -96,7 +95,7 @@ export default class UserController {
         let user = new User(req.user);
         let payloadValidate = req.payloadValidate;
         await this.usersStore.updateOne({_id: user._id}, {...payloadValidate})
-        return res.status(200).send({message: trans.response[req.lang as TLang].update_successfully})
+        return res.json({})
     }
 
     // get my info
