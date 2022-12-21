@@ -1,10 +1,10 @@
 {
-    "register_successfully": "register successfully",
-    "login_successfully": "login successfully",
-    "login_failure": "login failure",
-    "logout_successfully":"logout successfully",
-    "update_successfully":"update successfully",
-    "invalid_authentication_code": "invalid authentication code",
-    "create_successfully": "create successfully",
-    "remove_successfully": "remove successfully"
+    "register_successfully": "Register successfully",
+    "login_successfully": "Login successfully",
+    "login_failure": "Login failure",
+    "logout_successfully":"Logout successfully",
+    "update_successfully":"Update successfully",
+    "invalid_authentication_code": "Invalid authentication code",
+    "create_successfully": "Create successfully",
+    "remove_successfully": "Remove successfully"
 }
