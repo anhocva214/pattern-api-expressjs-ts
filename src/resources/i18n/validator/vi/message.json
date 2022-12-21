@@ -1,8 +1,0 @@
-{
-    "is_required": "là thông tin cần thiết",
-    "is_exists": "đã tồn tại",
-    "is_not_numberic": "không phải số",
-    "is_not_email_format": "không đúng định dạng",
-    "is_not_exist": "không tồn tại",
-    "is_undefined": "chưa xác định"
-}

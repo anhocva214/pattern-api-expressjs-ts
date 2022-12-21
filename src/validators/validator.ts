@@ -1,8 +1,6 @@
 import validator from 'validator';
 import { model } from "mongoose";
-import { User } from "@models/user.model";
-import { trans } from "@resources/i18n";
-import { TFieldname, TLang } from "@resources/i18n/interface";
+import { TLang } from "@resources/i18n/interface";
 import { IErrorValidator, IObj, IObjValidate } from "./interface";
 import { i18nValidator } from '@config/i18n.config';
 
@@ -68,7 +66,7 @@ export default class Validator {
         )
     }
 
-    private addError(field: TFieldname, message: string) {
+    private addError(field: string, message: string) {
         if (Object.keys(this.errors).indexOf(field) < 0) {
             this.errors[field] = []
         }
@@ -165,11 +163,11 @@ class Rules {
 
             if (ignoreField && this.user?.[ignoreField] != ignoreValue){
                 this.error = true;
-                this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+                this.message = `:field ${i18nValidator.message.__({phrase: 'is_exists', locale: this.lang})}`
             }
             else if (!ignoreField){
                 this.error = true;
-                this.message = `:field ${trans.validator[this.lang].message.is_exists}`
+                this.message = `:field ${i18nValidator.message.__({phrase: 'is_exists', locale: this.lang})}`
             }
             
         }
@@ -182,7 +180,7 @@ class Rules {
     private async isNumeric() {
         if (!validator.isNumeric(this.value)) {
             this.error = true
-            this.message = `:field ${trans.validator[this.lang].message.is_not_numberic}`
+            this.message = `:field ${i18nValidator.message.__({phrase: 'is_not_numberic', locale: this.lang})}`
         }
     }
 
@@ -193,7 +191,7 @@ class Rules {
     private async isEmail() {
         if (!validator.isEmail(this.value)) {
             this.error = true
-            this.message = `:field ${trans.validator[this.lang].message.is_not_email_format}`
+            this.message = `:field ${i18nValidator.message.__({phrase: 'is_not_email_format', locale: this.lang})}`
         }
 
     }
@@ -208,7 +206,7 @@ class Rules {
         if (onlyValues.indexOf(this.value) < 0) {
             return {
                 error: true,
-                msg: `:field ${trans.validator[this.lang].message.is_not_exist}`
+                msg: `:field ${i18nValidator.message.__({phrase: 'is_not_exist', locale: this.lang})}`
             }
         }
         else return {
@@ -224,7 +222,7 @@ class Rules {
     private async optional() {
         if (this.value == undefined) {
             this.error = true
-            this.message = `:field ${trans.validator[this.lang].message.is_undefined}`
+            this.message = `:field ${i18nValidator.message.__({phrase: 'is_undefined', locale: this.lang})}`
         }
     }
 
