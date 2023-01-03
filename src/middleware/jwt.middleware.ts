@@ -24,20 +24,20 @@ export default function middleware(role: string) {
 
             if (!token) return res.status(401).send({ message: 'access_token is inactive' })
 
-            let user = await usersStore.findOne({ _id: payload._id })
+            let user = await usersStore.getById( payload._id)
             if (!user){
                 return res.status(401).send({ message: 'user is deleted' })
             }
 
             req.user = user
-            req.tokenId = token._id;
+            req.tokenId = token._id.toString();
 
             next()
         }
         catch (err: any) {
             logger.error(err)
             if (err.message == 'jwt expired') {
-                await usersStore.deleteOne({ payload: accessToken })
+                await tokensStore.deleteOne({ payload: accessToken })
                 return res.status(419).send({ message: "access_token is expired" })
             }
             else if (err.message == 'jwt must be provided'){

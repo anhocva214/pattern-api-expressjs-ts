@@ -3,7 +3,8 @@ import { model } from "mongoose";
 import { TLang } from "@resources/i18n/interface";
 import { IErrorValidator, IObj, IObjValidate } from "./interface";
 import { i18nValidator } from '@config/i18n.config';
-
+import { fieldToKey } from '@helpers/validator.helper';
+import _ from 'lodash'
 
 export default class Validator {
     private obj: IObj
@@ -23,7 +24,7 @@ export default class Validator {
             objValidate.map(async item => {
                 await Promise.all(
                     item.rules.map(async rule => {
-                        let ruleParams = '', ruleName='';
+                        let ruleParams = '', ruleName = '';
                         if (rule.indexOf(":") >= 0) {
                             ruleParams = rule.split(":")[1];
                             ruleName = rule.split(":")[0]
@@ -32,32 +33,34 @@ export default class Validator {
                             ruleName = rule
                         }
 
-                        if ((rule != 'required' && !!this.obj?.[item.field]) || rule == 'optional') {
+                        const value = _.get(this.obj, item.field)
+
+                        if ((rule != 'required' && !!value) || rule == 'optional') {
                             let rules = new Rules({
-                                key: item.field,
-                                value: this.obj?.[item.field],
+                                key: fieldToKey(item.field),
+                                value: value,
                                 params: ruleParams,
                                 lang: this.lang,
                                 user: this.user
                             })
                             await rules.check(ruleName)
-                            let {error, message} = rules.result()
+                            let { error, message } = rules.result()
                             if (error) {
                                 this.addError(item.field as any, message)
                             }
                         }
                         else {
                             let rules = new Rules({
-                                key: item.field,
-                                value: this.obj?.[item.field],
+                                key: fieldToKey(item.field),
+                                value: value,
                                 params: ruleParams,
                                 lang: this.lang,
                                 user: this.user
                             })
                             await rules.check('required')
-                            let {error, message} = rules.result()
+                            let { error, message } = rules.result()
                             if (error) {
-                                this.addError(item.field as any, message)
+                                this.addError(fieldToKey(item.field), message)
                             }
                         }
                     })
@@ -70,7 +73,7 @@ export default class Validator {
         if (Object.keys(this.errors).indexOf(field) < 0) {
             this.errors[field] = []
         }
-        this.errors[field].push(message.replace(":field", i18nValidator.fieldname.__({phrase: field, locale: this.lang})))
+        this.errors[field].push(message.replace(":field", i18nValidator.fieldname.__({ phrase: field, locale: this.lang })))
         let messages = this.errors[field];
         let messagesSet = new Set(messages)
         this.errors[field] = Array.from(messagesSet)
@@ -132,6 +135,9 @@ class Rules {
             case 'unique':
                 await this.unique()
                 break;
+            case 'link':
+                await this.link()
+                break;
         }
     }
 
@@ -142,7 +148,7 @@ class Rules {
     private async required() {
         if (!this.value) {
             this.error = true;
-            this.message = `:field ${i18nValidator.message.__({phrase: 'is_required', locale: this.lang})}`
+            this.message = `:field ${i18nValidator.message.__({ phrase: 'is_required', locale: this.lang })}`
         }
     }
 
@@ -161,15 +167,15 @@ class Rules {
             let ignoreValue = item[ignoreField]
             if (ignoreField == '_id') ignoreValue = item[ignoreField].toString()
 
-            if (ignoreField && this.user?.[ignoreField] != ignoreValue){
+            if (ignoreField && this.user?.[ignoreField] != ignoreValue) {
                 this.error = true;
-                this.message = `:field ${i18nValidator.message.__({phrase: 'is_exists', locale: this.lang})}`
+                this.message = `:field ${i18nValidator.message.__({ phrase: 'is_exists', locale: this.lang })}`
             }
-            else if (!ignoreField){
+            else if (!ignoreField) {
                 this.error = true;
-                this.message = `:field ${i18nValidator.message.__({phrase: 'is_exists', locale: this.lang})}`
+                this.message = `:field ${i18nValidator.message.__({ phrase: 'is_exists', locale: this.lang })}`
             }
-            
+
         }
     }
 
@@ -180,7 +186,7 @@ class Rules {
     private async isNumeric() {
         if (!validator.isNumeric(this.value)) {
             this.error = true
-            this.message = `:field ${i18nValidator.message.__({phrase: 'is_not_numberic', locale: this.lang})}`
+            this.message = `:field ${i18nValidator.message.__({ phrase: 'is_not_numberic', locale: this.lang })}`
         }
     }
 
@@ -191,7 +197,7 @@ class Rules {
     private async isEmail() {
         if (!validator.isEmail(this.value)) {
             this.error = true
-            this.message = `:field ${i18nValidator.message.__({phrase: 'is_not_email_format', locale: this.lang})}`
+            this.message = `:field ${i18nValidator.message.__({ phrase: 'is_not_email_format', locale: this.lang })}`
         }
 
     }
@@ -206,7 +212,7 @@ class Rules {
         if (onlyValues.indexOf(this.value) < 0) {
             return {
                 error: true,
-                msg: `:field ${i18nValidator.message.__({phrase: 'is_not_exist', locale: this.lang})}`
+                msg: `:field ${i18nValidator.message.__({ phrase: 'is_not_exist', locale: this.lang })}`
             }
         }
         else return {
@@ -222,11 +228,22 @@ class Rules {
     private async optional() {
         if (this.value == undefined) {
             this.error = true
-            this.message = `:field ${i18nValidator.message.__({phrase: 'is_undefined', locale: this.lang})}`
+            this.message = `:field ${i18nValidator.message.__({ phrase: 'is_undefined', locale: this.lang })}`
         }
     }
 
-    result(){
+    /**
+    * field: 'link'
+    * rules: ['link']
+    */
+    private async link() {
+        if (!validator.isURL(this.value)) {
+            this.error = true
+            this.message = `:field ${i18nValidator.message.__({ phrase: 'is_not_formatted', locale: this.lang })}`
+        }
+    }
+
+    result() {
         return {
             error: this.error,
             message: this.message

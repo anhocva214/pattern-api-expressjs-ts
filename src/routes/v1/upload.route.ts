@@ -1,23 +1,16 @@
 import { UploadController } from '@controllers/upload.controller';
 import { Router } from 'express';
+import BaseRouter from '../base.route';
 
 
-export default class UploadRouter {
-    private router: Router;
+export default class UploadRouter extends BaseRouter {
     private controller: UploadController;
-    private pathBase: string;
     // private validator: UsersValidator;
 
     constructor(router: Router) {
-        this.router = router;
+        super({pathBase: '/uploads', router})
         this.controller = new UploadController();
-        this.pathBase = '/uploads';
         // this.validator = new UsersValidator();
-        this.instance()
-    }
-
-    path(p: string) {
-        return this.pathBase + p
     }
 
     instance() {
