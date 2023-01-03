@@ -7,7 +7,7 @@ import UsersRouter from './user.route'
 
 export function RoutersV1(){
     const router = Router();
-    new UsersRouter(router);
-    new UploadRouter(router);
+    new UsersRouter(router).instance();
+    new UploadRouter(router).instance();
     return router
 }

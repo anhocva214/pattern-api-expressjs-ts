@@ -1,4 +1,5 @@
 
+import { getField } from '@helpers/validator.helper';
 import express from 'express';
 import { IObjValidate } from './interface';
 import Validator from './validator';
@@ -13,7 +14,8 @@ export default class BaseValidator {
             
             let payload : any = {}
             objValidate.forEach(obj => {
-                payload[obj.field] = req.body[obj.field]
+                let field = getField(obj.field)
+                payload[field] = req.body[field]
             })
 
             req.payloadValidate = payload

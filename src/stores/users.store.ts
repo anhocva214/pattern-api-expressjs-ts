@@ -1,10 +1,21 @@
-import { User, UserDTO, UserModel } from "@models/user.model";
-import { BaseStore } from "."
+import { User, UserModel } from "@models/user.model";
+import { FilterQuery } from "mongoose";
 
 
-export default class UsersStore extends BaseStore<User>{
-
-    constructor(){
-        super(UserModel, User)
+export default class UsersStore{
+    create(data: User){
+        return UserModel.create(data)
+    }
+    getByUsername(username: string){
+        return UserModel.findOne({username})
+    }  
+    getById(id: string){
+        return UserModel.findById(id)
+    }   
+    updateById(id: string, data: any){
+        return UserModel.updateOne({_id: id}, data)
+    }
+    getAll(){
+        return UserModel.find({})
     }
 }

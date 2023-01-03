@@ -9,32 +9,30 @@ export class FieldError {
     }
 }
 
-interface IAppError {
+interface IAppError{
     where: string
-    id: string
-    detail?: string
+    message: string
+    detail: any
     errors?: { [x: string]: FieldError[] }
-    code: StatusCodes
+    statusCode: StatusCodes
 }
 
 export class AppError {
     where: string
-    id: string
     message: string
     detail: string
     errors?: { [x: string]: FieldError[] }
     statusCode: StatusCodes
     constructor(data: IAppError) {
         this.where = data.where
-        this.id = data.id
-        this.message = data.id
+        this.message = data.message
         this.detail = data.detail || ''
         this.errors = data.errors
-        this.statusCode = data.code
+        this.statusCode = data.statusCode
     }
 
     translate = (locale: 'vi' | 'en') => {
-        this.message = i18n.__({ phrase: this.id, locale })
+        this.message = i18n.__({ phrase: this.message, locale })
         if (this.errors) {
             for (const param in this.errors) {
                 this.errors[param].forEach((field) => {

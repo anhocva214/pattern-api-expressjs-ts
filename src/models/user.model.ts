@@ -22,9 +22,6 @@ export class User extends BaseModel{
     }
 }
 
-export class UserDTO {
-
-}
 
 const userSchema = new Schema({
     username: String,

@@ -47,25 +47,26 @@ export default class UserController {
     async login(req: Request, res: Response, next: NextFunction){
         try{
             let {username, password} = req.body;
-            let user = await this.usersStore.findOne({username})
+            let user = await this.usersStore.getByUsername(username)
             // console.log(user)
             if (!user || !await bcrypt.compare(password, user.password)){
                 throw new AppError({
                     where: "login",
-                    id: "login_failure",
-                    code: StatusCodes.UNAUTHORIZED,
+                    message: "login_failure",
+                    statusCode: StatusCodes.UNAUTHORIZED,
+                    detail: null
                 })
             }
     
             let token = new Token()
-            token.module_id = user._id;
+            token.module_id = user._id.toString();
             token.payload = this.jwtService.login(user, this.LOGIN_EXPIRES_IN)
             token.expires_in = this.LOGIN_EXPIRES_IN
     
             await this.tokensStore.create(token)
-    
+            
             res.json({
-                user,
+                user: {...user.toJSON(), password: null},
                 token:{
                     access_token: token.payload,
                     expires_in: token.expires_in
@@ -94,7 +95,7 @@ export default class UserController {
     async update(req: Request, res: Response){
         let user = new User(req.user);
         let payloadValidate = req.payloadValidate;
-        await this.usersStore.updateOne({_id: user._id}, {...payloadValidate})
+        await this.usersStore.updateById(user?._id?.toString() || '', {...payloadValidate})
         return res.json({})
     }
 
@@ -106,7 +107,7 @@ export default class UserController {
 
     // get all users
     async getAll(req: Request, res: Response){
-        let users = await this.usersStore.find({})
+        let users = await this.usersStore.getAll()
         return res.status(200).send(users)
     }
 }
