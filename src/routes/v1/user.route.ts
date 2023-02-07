@@ -4,6 +4,7 @@ import { UsersValidator } from '@validators/users.validator';
 import middleware from '@middleware/jwt.middleware';
 import rateLimit from 'express-rate-limit'
 import BaseRouter from '../base.route';
+import { formValidate } from '@validators/index';
 
 const apiLimiter = rateLimit({
 	windowMs: 2 * 60 * 1000, // 2 minutes
@@ -27,12 +28,12 @@ export default class UsersRouter extends BaseRouter {
     instance(){
         this.router.post(
             this.path('/register'), 
-            this.validator.register(),
+            formValidate(this.validator.register()),
             this.controller.register.bind(this.controller)
         )
         this.router.post(
             this.path('/login'),
-            this.validator.login(),
+            formValidate(this.validator.login()),
             this.controller.login.bind(this.controller)
         )
         this.router.get(
@@ -48,7 +49,7 @@ export default class UsersRouter extends BaseRouter {
         this.router.put(
             this.path('/'),
             middleware('user'),
-            this.validator.update(),
+            formValidate(this.validator.update()),
             this.controller.update.bind(this.controller)
         )
         this.router.get(
