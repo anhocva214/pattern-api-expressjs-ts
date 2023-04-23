@@ -3,19 +3,22 @@ import { FilterQuery } from "mongoose";
 
 
 export default class UsersStore{
-    create(data: User){
-        return UserModel.create(data)
+    async create(data: User){
+        return new User((await UserModel.create(data)).toObject())
     }
-    getByUsername(username: string){
-        return UserModel.findOne({username})
+    async getBy(filter: FilterQuery<User>){
+        let data = (await UserModel.findOne(filter))?.toObject()
+        return data ? new User(data) : null
     }  
-    getById(id: string){
-        return UserModel.findById(id)
+    async getById(id: string){
+        let data = (await UserModel.findOne({_id: id}))?.toObject()
+        return data ? new User(data) : null
     }   
-    updateById(id: string, data: any){
-        return UserModel.updateOne({_id: id}, data)
+    async updateById(id: string, data: any){
+        return await UserModel.updateOne({_id: id}, data)
     }
-    getAll(){
-        return UserModel.find({})
+    async getAll(){
+        let data = await UserModel.find({})
+        return data.map(item => new User(item.toObject()))
     }
 }

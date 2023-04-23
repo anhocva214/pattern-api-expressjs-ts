@@ -26,4 +26,12 @@ const tokenSchema = new Schema({
     updated_at: String
 })
 
+tokenSchema.set('toObject', {
+    transform: function (doc, ret) {
+        ret.id = ret._id?.toString();
+        delete ret._id;
+    }
+});
+
+
 export const TokenModel = model<Token>('Token', tokenSchema);

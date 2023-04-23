@@ -30,7 +30,7 @@ export default function middleware(role: string) {
             }
 
             req.user = user
-            req.tokenId = token._id.toString();
+            req.tokenId = token?.id;
 
             next()
         }

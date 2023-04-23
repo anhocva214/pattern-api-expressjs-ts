@@ -2,12 +2,12 @@
   "name": "pattern-nodejs-typescript",
   "version": "0.0.0",
   "scripts": {
-    "build": "./node_modules/.bin/ts-node build.ts",
-    "lint": "eslint . --ext .ts",
-    "start:production": "node -r module-alias/register ./dist --env=production",
     "dev": "nodemon",
+    "test:unit": "jest --detectOpenHandles",
+    "build": "node --max-old-space-size=4096 ./node_modules/.bin/tsc",
+    "start": "node -r module-alias/register ./dist",
     "start:testing": "node -r module-alias/register ./dist --env=testing",
-    "generate": "plop"
+    "start:production": "node -r module-alias/register ./dist --env=production"
   },
   "nodemonConfig": {
     "watch": [

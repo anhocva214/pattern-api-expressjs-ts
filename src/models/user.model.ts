@@ -33,4 +33,11 @@ const userSchema = new Schema({
     updated_at: String
 })
 
+userSchema.set('toObject', {
+    transform: function (doc, ret) {
+        ret.id = ret._id?.toString();
+        delete ret._id;
+    }
+});
+
 export const UserModel = model<User>('User', userSchema, 'User');

@@ -3,6 +3,5 @@
 package-lock.json
 .DS_Store
 jet-logger.log
-yarn.lock
 /dist/
 /logs/

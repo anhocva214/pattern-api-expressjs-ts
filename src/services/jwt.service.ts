@@ -12,7 +12,7 @@ export default class JwtService {
     login(user: User, expiresIn: number) {
         return jwt.sign({
             data: {
-                _id: user._id,
+                _id: user.id,
                 role: user.role
             }
         }, this.secret, { expiresIn });

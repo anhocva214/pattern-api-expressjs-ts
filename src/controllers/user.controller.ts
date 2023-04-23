@@ -34,8 +34,8 @@ export default class UserController {
             let user = new User(req.body)
             user.password = await bcrypt.hash(user.password, await bcrypt.genSalt())
             user.role = 'user'
-            let newUser = await this.usersStore.create(user)
-            res.json(newUser)
+            await this.usersStore.create(user)
+            res.json({})
         }
         catch(err){
             console.log(err)
@@ -47,7 +47,7 @@ export default class UserController {
     async login(req: Request, res: Response, next: NextFunction){
         try{
             let {username, password} = req.body;
-            let user = await this.usersStore.getByUsername(username)
+            let user = await this.usersStore.getBy({username})
             // console.log(user)
             if (!user || !await bcrypt.compare(password, user.password)){
                 throw new AppError({
@@ -59,14 +59,14 @@ export default class UserController {
             }
     
             let token = new Token()
-            token.module_id = user._id.toString();
+            token.module_id = user?.id || "";
             token.payload = this.jwtService.login(user, this.LOGIN_EXPIRES_IN)
             token.expires_in = this.LOGIN_EXPIRES_IN
     
             await this.tokensStore.create(token)
             
             res.json({
-                user: {...user.toJSON(), password: null},
+                user: {...user, password: undefined},
                 token:{
                     access_token: token.payload,
                     expires_in: token.expires_in
@@ -82,7 +82,7 @@ export default class UserController {
 
     // logout
     async logout(req: Request, res: Response){
-        await this.tokensStore.deleteOne({module_id: req.user._id, _id: req.tokenId})
+        await this.tokensStore.deleteOne({module_id: req.user.id, _id: req.tokenId})
         return res.json({})
     }
 
@@ -95,7 +95,7 @@ export default class UserController {
     async update(req: Request, res: Response){
         let user = new User(req.user);
         let payloadValidate = req.payloadValidate;
-        await this.usersStore.updateById(user?._id?.toString() || '', {...payloadValidate})
+        await this.usersStore.updateById(user?.id || '', {...payloadValidate})
         return res.json({})
     }
 

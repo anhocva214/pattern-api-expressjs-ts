@@ -1,4 +1,4 @@
-import './pre-start'; // Must be the first import
+import '@config/env.config' // Must be the first import
 import app from '@server';
 import logger from '@services/logger.service';
 

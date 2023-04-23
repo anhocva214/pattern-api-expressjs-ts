@@ -1,8 +1,14 @@
-import { UserModel } from '@models/user.model';
+import { User, UserModel } from '@models/user.model';
+import UsersStore from '@stores/users.store';
 import { check, validationResult } from 'express-validator'
 
 
 export class UsersValidator {
+    private userStore: UsersStore
+
+    constructor(){
+        this.userStore = new UsersStore()
+    }
 
     register() {
         return [
@@ -52,9 +58,9 @@ export class UsersValidator {
                 .trim()
                 .normalizeEmail()
                 .custom(async (email: string, {req}) => {
-                    let user = req.user
-                    const existingUser = await UserModel.findOne({ email });
-                    if (existingUser && existingUser?._id.toString() != user?._id?.toString()) {
+                    let user = new User(req.user)
+                    const existingUser = await this.userStore.getById(user?.id || '')
+                    if (existingUser && existingUser?.id != user?.id) {
                         throw new Error("is_exists");
                     }
                 }),
