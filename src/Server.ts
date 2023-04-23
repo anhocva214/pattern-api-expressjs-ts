@@ -4,7 +4,6 @@ import helmet from "helmet";
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import StatusCodes from "http-status-codes";
-import "express-async-errors";
 
 import { connectMongoDB } from "@config/db.config";
 import { TLang } from "@resources/i18n/interface";
