@@ -101,7 +101,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "spec/**/*.ts"
+    "src/**/*.json"
   ],
   "exclude": [
     "src/public/"

@@ -1,22 +1,22 @@
 import { Types } from "mongoose";
 
 export default class BaseModel{
-    _id?: Types.ObjectId;
+    id?: string;
     createdAt: Date;
     updatedAt: Date;
     
     constructor(obj: {
-        _id?: Types.ObjectId;
+        id?: string;
         createdAt: Date;
         updatedAt: Date;
     }){
-        this._id = obj?._id;
+        this.id = obj?.id;
         this.createdAt = obj?.createdAt;
         this.updatedAt = obj?.updatedAt;
     }
 
     preCreate(){
-        delete this._id;
+        delete this.id;
         this.createdAt = new Date();
         this.updatedAt = this.createdAt
     }
