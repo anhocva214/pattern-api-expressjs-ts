@@ -1,43 +1,63 @@
-import { Schema, model } from 'mongoose';
-import BaseModel from '.';
+import { DataTypes } from "sequelize";
+import BaseModel from ".";
+import { sequelize } from "@config/db.config";
+import { Token } from "./token.model";
 
-
-
-export class User extends BaseModel{
-    username: string;
-    password: string;
-    email: string;
-    fullname: string;
-    role: String;
-
-    constructor();
-    constructor(user: User);
-    constructor(obj?: any) {
-        super(obj);
-        this.username = obj?.username || "";
-        this.email = obj?.email || "";
-        this.password = obj?.password || "";
-        this.fullname = obj?.fullname || "";
-        this.role = obj?.role || "";
-    }
+export class User extends BaseModel {
+  username!: string;
+  password!: string;
+  email!: string;
+  fullname!: string;
+  role!: String;
 }
 
+User.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
+      primaryKey: true,
+    },
+    fullname: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM("user", "admin"),
+      defaultValue: "user",
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    tableName: "Users",
+  }
+);
 
-const userSchema = new Schema({
-    username: String,
-    password: String,
-    fullname: String,
-    email: String,
-    role: String,
-    created_at: String,
-    updated_at: String
-})
+User.hasMany(Token, { sourceKey: "id", foreignKey: "moduleId", as: "Tokens" });
+Token.belongsTo(User, { targetKey: "id", foreignKey: "moduleId", as: "Users" });
 
-userSchema.set('toObject', {
-    transform: function (doc, ret) {
-        ret.id = ret._id?.toString();
-        delete ret._id;
-    }
+User.beforeDestroy(async (user) => {
+  await Token.destroy({ where: { userId: user.id } });
 });
-
-export const UserModel = model<User>('User', userSchema, 'User');

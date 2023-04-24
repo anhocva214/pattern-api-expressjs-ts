@@ -5,17 +5,14 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import StatusCodes from "http-status-codes";
 
-import { connectMongoDB } from "@config/db.config";
 import { TLang } from "@resources/i18n/interface";
 import { RoutersV1 } from "./routes/v1";
 import { AppError } from "@models/error";
 import logger from "@services/logger.service";
 import { ENV } from "@helpers/env.helper";
 import moment from "moment";
+import {sequelize} from '@config/db.config'
 
-connectMongoDB()
-  .then(() => logger.info("Connect database success"))
-  .catch((err) => logger.error(err));
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
@@ -47,6 +44,9 @@ declare module "express" {
     lang?: TLang;
   }
 }
+
+// Sync database
+sequelize.sync()
 
 // Handle accept language
 function handleLanguage(req: Request, res: Response, next: NextFunction) {

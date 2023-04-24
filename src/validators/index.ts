@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from 'express-validator'
+import { ValidationChain, validationResult } from 'express-validator'
 import { IErrorValidator } from "./interface";
 import { i18nValidator } from '@config/i18n.config';
 
 
-export const formValidate = (validations: Array<any>) => {
+export const formValidate = (validations: Array<ValidationChain | undefined>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-        await Promise.all(validations.map((validation) => validation.run(req)));
+        await Promise.all(validations.map((validation) => validation?.run(req)));
 
         const errors = validationResult(req);
         if (errors.isEmpty()) {

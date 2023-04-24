@@ -52,6 +52,11 @@ export default class UsersRouter extends BaseRouter {
             formValidate(this.validator.update()),
             this.controller.update.bind(this.controller)
         )
+        this.router.delete(
+            this.path('/:userId'),
+            middleware('user'),
+            this.controller.remove.bind(this.controller)
+        )
         this.router.get(
             this.path('/me'),
             middleware('user'),

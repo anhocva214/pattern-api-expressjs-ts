@@ -1,37 +1,43 @@
-import { Schema, model } from 'mongoose';
-import BaseModel from '.';
-
+import { DataTypes, Sequelize } from "sequelize";
+import BaseModel from ".";
+import { sequelize } from "@config/db.config";
 
 export class Token extends BaseModel {
-    payload: string;
-    expires_in: number;
-    module_id: string;
-
-    constructor();
-    constructor(obj?: Token)
-    constructor(obj?: any){
-        super(obj);
-        this.payload = obj?.payload || '';
-        this.module_id = obj?.module_id || '';
-        this.expires_in  = obj?.expires_in || 0;
-    }
+  payload!: string;
+  expiredAt!: Date;
+  moduleId!: string;
 }
 
-
-const tokenSchema = new Schema({
-    payload: String,
-    expires_in: Number,
-    module_id: String,
-    created_at: String,
-    updated_at: String
-})
-
-tokenSchema.set('toObject', {
-    transform: function (doc, ret) {
-        ret.id = ret._id?.toString();
-        delete ret._id;
-    }
-});
-
-
-export const TokenModel = model<Token>('Token', tokenSchema);
+Token.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV1,
+      primaryKey: true,
+    },
+    payload: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    moduleId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    expiredAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    tableName: "Tokens",
+  }
+);

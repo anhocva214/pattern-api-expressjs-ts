@@ -1,19 +1,9 @@
-import { Types } from "mongoose";
-
-export default class BaseModel{
+import { Model, DataTypes } from 'sequelize';
+export default class BaseModel extends Model{
     id?: string;
-    createdAt: Date;
-    updatedAt: Date;
-    
-    constructor(obj: {
-        id?: string;
-        createdAt: Date;
-        updatedAt: Date;
-    }){
-        this.id = obj?.id;
-        this.createdAt = obj?.createdAt;
-        this.updatedAt = obj?.updatedAt;
-    }
+    createdAt!: Date;
+    updatedAt!: Date;
+
 
     preCreate(){
         delete this.id;

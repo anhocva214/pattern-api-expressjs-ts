@@ -76,9 +76,6 @@
       "@helpers/*": [
         "src/helpers/*"
       ],
-      "@stores/*": [
-        "src/stores/*"
-      ],
       "@controllers/*": [
         "src/controllers/*"
       ],

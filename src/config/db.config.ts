@@ -1,12 +1,13 @@
-import { ENV } from '@helpers/env.helper';
-import { connect, connection } from 'mongoose';
+import { ENV } from "@helpers/env.helper";
+import { Sequelize } from "sequelize";
 
-export async function connectMongoDB(): Promise<void> {
-    await connect(`mongodb://${ENV.MONGO_USER}:${ENV.MONGO_PASS}@${ENV.MONGO_HOST}:${ENV.MONGO_PORT}`, {
-        dbName: ENV.MONGO_DB
-    });
-}
-
-export async function closeMongoDB(): Promise<void> {
-    await connection.close()
-}
+export const sequelize = new Sequelize(
+  ENV.MYSQL_DB as string,
+  ENV.MYSQL_USER as string,
+  ENV.MYSQL_PASS as string,
+  {
+    host: ENV.MYSQL_HOST as string,
+    port: parseInt(ENV.MYSQL_PORT as string),
+    dialect: "mysql",
+  }
+);
