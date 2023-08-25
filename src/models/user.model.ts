@@ -2,19 +2,18 @@ import { Schema, model } from 'mongoose';
 import BaseModel from '.';
 
 
+export type TUserRole = "user" | "admin"
 
 export class User extends BaseModel{
-    username: string;
-    password: string;
     email: string;
+    password: string;
     fullname: string;
-    role: String;
+    role: TUserRole;
 
     constructor();
     constructor(user: User);
     constructor(obj?: any) {
         super(obj);
-        this.username = obj?.username || "";
         this.email = obj?.email || "";
         this.password = obj?.password || "";
         this.fullname = obj?.fullname || "";
@@ -24,13 +23,12 @@ export class User extends BaseModel{
 
 
 const userSchema = new Schema({
-    username: String,
     password: String,
     fullname: String,
     email: String,
     role: String,
-    created_at: String,
-    updated_at: String
+    createdAt: String,
+    updatedAt: String
 })
 
 userSchema.set('toObject', {

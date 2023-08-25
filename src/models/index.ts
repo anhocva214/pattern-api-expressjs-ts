@@ -2,8 +2,8 @@ import { Types } from "mongoose";
 
 export default class BaseModel{
     id?: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
     
     constructor(obj: {
         id?: string;
@@ -22,6 +22,8 @@ export default class BaseModel{
     }
 
     preUpdate(){
+        delete this.id;
+        delete this.createdAt;
         this.updatedAt = new Date();
     }
     
